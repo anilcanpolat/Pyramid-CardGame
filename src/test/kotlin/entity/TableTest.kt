@@ -30,6 +30,10 @@ class TableTest {
             testTable1 = Table(testStack1, testStack2, testPyramid)
             }
     }
+
+    /**
+     * Function serves as testing the above given tasks.
+     */
     @Test
     fun tableTests() {
 
