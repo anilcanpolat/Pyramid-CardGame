@@ -2,6 +2,10 @@ package entity
 import java.util.*
 import kotlin.test.*
 
+/**
+ *TableTest is to test if different Arrays initiate the Pyramid and
+ *if the empty stacks and empty Stacks initiate Pyramid
+ */
 class TableTest {
 
     companion object {
@@ -27,7 +31,7 @@ class TableTest {
             }
     }
     @Test
-    fun tableTest() {
+    fun tableTests() {
 
         // Test the card's properties
         assertEquals(testStack1, testTable1.reserveStack, "Reserve stack is not equal")

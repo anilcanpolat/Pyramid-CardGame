@@ -2,6 +2,10 @@ package entity
 import java.lang.IllegalArgumentException
 import kotlin.test.*
 
+/**
+ *Test class' main purpose is to test different realizations.
+ *Such as if the cards value, card suit and if the card is visible
+ */
 class CardTest {
 
     companion object {
@@ -9,11 +13,16 @@ class CardTest {
         val testCard2 = Card(CardSuit.CLUBS, 5, true)
     }
 
+    /**
+     * Function serves as testing the above given tasks.
+     */
     @Test
-    fun cardTest() {
+    fun cardTests() {
 
-        //Invalid input test
-        assertFailsWith<IllegalArgumentException>(message = "Value must be between 1 and 13 (inclusive)", block = { Card(CardSuit.DIAMONDS, 15, false)})
+        assertFailsWith<IllegalArgumentException>(
+            message = "Value must be between 1 and 13 (inclusive)",
+            block = { Card(CardSuit.DIAMONDS, 15, false) }
+        )
 
         // Test the card's properties
         assertEquals(10, testCard1.value, "It should have been 10")

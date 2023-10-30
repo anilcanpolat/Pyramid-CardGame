@@ -1,12 +1,23 @@
 package entity
 import kotlin.test.*
 
+/**
+ * GameStateTest is build around if the currentPlayer changes
+ * every round and if the sitOutCount increments and decrements
+ */
 class GameStateTest {
     private var testInt1 = 0
-    private val testGameState: GameState = GameState(TableTest.testTable1,PlayerTest.testPlayer1, playerB = Player("Morty Smith", 131))
+    private val testGameState: GameState = GameState(
+        table = TableTest.testTable1,
+        playerA = PlayerTest.testPlayer1,
+        playerB = Player("Morty Smith", 131)
+    )
 
+    /**
+     * Function serves as testing the above given tasks.
+     */
     @Test
-    fun gameStateTest() {
+    fun gameStateTests() {
 
         //Testing if switching from A to B
         var testCurrentPlayer: Player = testGameState.currentPlayer

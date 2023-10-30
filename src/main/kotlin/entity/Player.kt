@@ -1,5 +1,9 @@
 package entity
 
+/**
+ *Every player has variable names and scores
+ *as they can later on the game change
+ */
 data class Player(
     var name: String = "",
     var score: Int = 0

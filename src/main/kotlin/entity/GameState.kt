@@ -1,6 +1,10 @@
 package entity
 import kotlin.random.Random
 
+/**
+ *Data class defines the values table, PlayerA, PlayerB
+ *and variable currentPlayer as it changes periodically
+ */
 data class GameState(
     val table: Table,
     val playerA: Player,
