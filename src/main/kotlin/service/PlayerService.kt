@@ -154,7 +154,6 @@ class PlayerService(private val gameState: GameState) {
             return // Exit the method if the game is over
         }
 
-
         //Not yet finished
 
     }
