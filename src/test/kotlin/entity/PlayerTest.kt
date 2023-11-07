@@ -10,7 +10,7 @@ import kotlin.test.*
 class PlayerTest {
 
     companion object {
-        public val testPlayer1 = Player("Rick Sanchez", 137)
+        public val testPlayer1 = Player("Rick Sanchez")
     }
 
     /**
@@ -27,6 +27,5 @@ class PlayerTest {
 
         // Test the player's properties
         assertEquals("Rick Sanchez", testPlayer1.name, "It should have been Rick Sanchez")
-        assertEquals(137, testPlayer1.score)
     }
 }

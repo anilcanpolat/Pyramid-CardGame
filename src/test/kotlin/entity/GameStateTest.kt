@@ -10,7 +10,7 @@ class GameStateTest {
     private val testGameState: GameState = GameState(
         table = TableTest.testTable1,
         playerA = PlayerTest.testPlayer1,
-        playerB = Player("Morty Smith", 131)
+        playerB = Player("Morty Smith")
     )
 
     /**
@@ -19,6 +19,7 @@ class GameStateTest {
     @Test
     fun gameStateTests() {
 
+        testGameState.sitOutCount = testInt1
         //Testing if switching from A to B
         var testCurrentPlayer: Player = testGameState.currentPlayer
         testGameState.switchCurrentPlayer()
@@ -30,10 +31,10 @@ class GameStateTest {
         assertNotEquals(testCurrentPlayer, testGameState.currentPlayer)
 
         //Testing if sitOutCount increments
-        testInt1 += 1
-        assertEquals(testInt1,1)
+        testGameState.sitOutCount += 1
+        assertEquals(testGameState.sitOutCount,1)
         //Testing if sitOutCount decrements
-        testInt1 -=1
-        assertEquals(testInt1,0)
+        testGameState.sitOutCount -=1
+        assertEquals(testGameState.sitOutCount,0)
     }
 }

@@ -9,7 +9,7 @@ import kotlin.test.*
 class CardTest {
 
     companion object {
-        val testCard1 = Card(CardSuit.HEARTS, 10, false)
+        val testCard1 = Card(CardSuit.HEARTS, 10)
         val testCard2 = Card(CardSuit.CLUBS, 5, true)
     }
 

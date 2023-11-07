@@ -1,0 +1,4 @@
+package view
+
+interface Refreshable {
+}

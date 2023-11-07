@@ -5,7 +5,7 @@ package entity
  *as they can later on the game change
  */
 data class Player(
-    var name: String = "",
+    val name: String = "",
     var score: Int = 0
 ) {
     init {
