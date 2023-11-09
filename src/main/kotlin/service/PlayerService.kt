@@ -6,16 +6,17 @@ import java.lang.IllegalStateException
 class PlayerService(private val gameState: GameState) {
 
     //Returns the position of card as Integer
-    private fun getPosOfCard(targetCard: Card): Int? {
+    private fun getPosOfCard(targetCard: Card): Pair<Int, Int>? {
         var currentPosition = 0 // This will be the position in a flattened version of the pyramid
 
         // Iterate through each row of the pyramid
-        for (row in gameState.table.pyramid) {
+        for (row in 0 until 7) {
             // Iterate through each card in the row
-            for (card in row) {
+            for (column in 0 until row+1) {
                 // Check if the current card is the one we're looking for
+                val card = gameState.table.pyramid[row][column]
                 if (card == targetCard) {
-                    return currentPosition
+                    return Pair(row,column)
                 }
                 // Increment the currentPosition for the next card
                 currentPosition++
@@ -25,50 +26,32 @@ class PlayerService(private val gameState: GameState) {
         return null
     }
 
-    //Returns the array+1 position of an element in 2-dimensional List in the form or Pair<Int,Int>
-    private fun findPosition(number: Int): Pair<Int, Int>? {
-        if (number < 1 || number > 28) {
-            return null // The number is out of bounds
-        }
-
-        var remaining = number
-        var row = 1
-
-        while (remaining > row) {
-            remaining -= row
-            row += 1
-        }
-
-        // At this point, 'row' is the row of the pyramid, and 'remaining' is the column in that row
-        return Pair(row, remaining)
-    }
-
     //Validates, if the cards has in total of the value 15
-    private fun isValidPair(cardA: Card, cardB: Card): Boolean {
+    private fun isValidPair(cardA: Card, cardB: Card): Int {
         if (cardA.value == 1 && cardB.value == 1) {
             // Two Aces cannot form a pair
-            return false
+            return -1
         }
         if (cardA.value == 1 || cardB.value == 1) {
             // If either card is an Ace, it's a valid pair
-            return true
+            return 1
         }
-        val sum = cardA.value + cardB.value
-        return sum == 15
+        if(cardA.value + cardB.value == 15) {
+            return 2
+        }
+        return -1
     }
 
     //Removes from the pyramid when a given Card is existent in a pyramid
-    private fun removeFromPyramid(Card: entity.Card) {
-        //Get the Position of the CardB as Array<Pair<Int, Int>?>
+    private fun removeFromPyramid(card: entity.Card) {
+        /*//Get the Position of the CardB as Array<Pair<Int, Int>?>
         val cardPosition = getPosOfCard(Card)?.let { findPosition(it) }
-        //Checks if the position is not null, as it is nullable
+        //Checks if the position is not null, as it is nullable*/
+        val cardPosition = getPosOfCard(card)
         if (cardPosition != null) {
             val (row, column) = cardPosition
-            // Adjusting for zero-based index since we are accessing lists
-            val rowIndex = row - 1
-            val columnIndex = column - 1
             //Sets the Card to null
-            gameState.table.pyramid[rowIndex][columnIndex] = null
+            gameState.table.pyramid[row][column] = null
         }
     }
 
@@ -78,7 +61,8 @@ class PlayerService(private val gameState: GameState) {
         CardB : entity.Card,
         useReserve: Boolean) : Unit {
         //Validates that, they can be unveiled
-        if(isValidPair(CardA, CardB)) {
+        val point = isValidPair(CardA, CardB)
+        if(point > 0) {
             //There is at one Card in the reserve that is going to be nulled
             if(useReserve) {
                 //CardA is on the reserveStack
@@ -99,8 +83,9 @@ class PlayerService(private val gameState: GameState) {
                 removeFromPyramid(CardA)
                 removeFromPyramid(CardB)
             }
+            if(point == 1) gameState.currentPlayer.score++
+            if(point == 2) gameState.currentPlayer.score+= 2
             gameState.sitOutCount = 0;
-            gameState.currentPlayer.score++
             gameState.switchCurrentPlayer()
         }
     }
@@ -127,51 +112,7 @@ class PlayerService(private val gameState: GameState) {
         gameState.sitOutCount++
     }
 
-    //Gives out the Card in a specific position
-    private fun getCardAtPos(pos: Int): Card? {
-
-        if (pos < 0) {
-            throw IllegalArgumentException("Position cannot be negative")
-        }
-        var currentPos = 0
-        for (row in gameState.table.pyramid) {
-            // Check if the position is within the current row
-            if (pos < currentPos + row.size) {
-                // The index within the row is the position minus the sum of all previous rows' sizes
-                return row[pos - currentPos]
-            }
-            // Update the current position to account for the size of the current row
-            currentPos += row.size
-        }
-
-        // If the position is out of bounds of the pyramid, return null or throw an exception
-        return null
-    }
-
-    fun roundService(root: RootService) {
-        // Check if the game has already finished
-        if (gameFinished()) {
-            return // Exit the method if the game is over
-        }
-
-        //Not yet finished
-
-    }
-
     fun currentPlayerName() : String {
         return gameState.currentPlayer.name
-    }
-
-    //If 2 subsequent pass occurs or pyramid is completely empty game ends
-    fun gameFinished() : Boolean {
-
-        if (gameState.playerA.score > gameState.playerB.score) println("${gameState.playerA.name} has won")
-        else if(gameState.playerA.score < gameState.playerB.score) println("${gameState.playerA.name} has won")
-        else println("It's a draw ¯\\_(ツ)_/¯")
-
-        return gameState.sitOutCount == 2 ||
-                gameState.table.pyramid.all { row ->
-                    row.all { it == null }
-                }
     }
 }

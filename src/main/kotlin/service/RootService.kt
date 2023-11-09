@@ -5,6 +5,7 @@ import java.util.Stack
 import kotlin.random.Random
 
 class RootService {
+    lateinit var currentGame: GameState
 
     //Creates a MutableList of 52 Cards
     private fun createStandardDeck(): MutableList<Card> {
@@ -16,7 +17,7 @@ class RootService {
     }
 
     //Transfers the "numberOfCards" Cards to the List
-    fun transferCardsToList(cards: MutableList<Card>, numberOfCards: Int): Stack<Card> {
+    private fun transferCardsToList(cards: MutableList<Card>, numberOfCards: Int): Stack<Card> {
         val cardStack = Stack<Card>()
 
         // Check if the list has enough cards to transfer
@@ -33,7 +34,7 @@ class RootService {
     }
 
     //Transfers fix numbers of Cards(28) to pyramid as nested MutableList of MutableList contains Cards
-    fun transferCardsToPyramid(cards: MutableList<Card>, pyramid: MutableList<MutableList<Card?>>) {
+    private fun transferCardsToPyramid(cards: MutableList<Card>, pyramid: MutableList<MutableList<Card?>>) {
         if (cards.size < 28) {
             throw IllegalArgumentException("Not enough cards to fill the pyramid.")
         }
@@ -44,37 +45,46 @@ class RootService {
             for (cardInLevel in 1..level) {
                 levelCards.add(cards[cardIndex++])
             }
-            pyramid.add(levelCards)
+            if (pyramid.size > level - 1) {
+                pyramid[level - 1] = levelCards  // Replace the existing row
+            } else {
+                pyramid.add(levelCards)  // Add a new row if it does not exist
+            }
         }
     }
 
     //Initializes Stacks, Table and Players
     fun startGame(aName: String, bName : String) : Unit {
 
+        var cards: MutableList<Card> = createStandardDeck().shuffled().toMutableList()
         var reserveStack: Stack<Card> = Stack()
-        var drawPile: Stack<Card> = Stack()
+        var drawPile = transferCardsToList(cards, 24)
         val table = Table(reserveStack, drawPile)
         val playerA = Player(aName)
         val playerB = Player(bName)
-
-        var cards: MutableList<Card> = createStandardDeck().shuffled().toMutableList()
-
-        drawPile = transferCardsToList(cards, 24)
         transferCardsToPyramid(cards, table.pyramid)
-        val currentGame = GameState(table, playerA, playerB)
+        currentGame = GameState(table, playerA, playerB)
     }
 
     //Requires player names as inputs and starts the game
-    fun rootService() {
+    fun rootService(player1Name: String, player2Name: String) {
 
         val standardDeck = createStandardDeck() // Function to create 52 standard playing cards
-        print("Enter Player1 name: ")
-        val player1Name = readLine()
+        startGame(player1Name, player2Name)
+    }
 
-        print("Enter Player2 name: ")
-        val player2Name = readLine()
+    //If 2 subsequent pass occurs or pyramid is completely empty game ends
+    fun gameFinished() : Boolean {
 
-        if(player1Name != null && player2Name != null)
-            startGame(player1Name, player2Name)
+        if (currentGame.playerA.score > currentGame.playerB.score)
+            println("${currentGame.playerA.name} has won")
+        else if
+            (currentGame.playerA.score < currentGame.playerB.score) println("${currentGame.playerA.name} has won")
+        else println("It's a draw ¯\\_(ツ)_/¯")
+
+        return currentGame.sitOutCount == 2 ||
+                currentGame.table.pyramid.all { row ->
+                    row.all { it == null }
+                }
     }
 }

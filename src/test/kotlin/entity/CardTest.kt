@@ -20,9 +20,9 @@ class CardTest {
     fun cardTests() {
 
         assertFailsWith<IllegalArgumentException>(
-            message = "Value must be between 1 and 13 (inclusive)",
-            block = { Card(CardSuit.DIAMONDS, 15, false) }
-        )
+            message = "Value must be between 1 and 13 (inclusive)")
+        {Card(CardSuit.DIAMONDS, 15, false) }
+
 
         // Test the card's properties
         assertEquals(10, testCard1.value, "It should have been 10")

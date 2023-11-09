@@ -21,9 +21,8 @@ class PlayerTest {
 
         //Invalid input test
         assertFailsWith<IllegalArgumentException>(
-            message = "Score must be greater or equal to 0",
-            block = { Player("Morty Smith", -131) }
-        )
+            message = "Score must be greater or equal to 0")
+        { Player("Morty Smith", -131) }
 
         // Test the player's properties
         assertEquals("Rick Sanchez", testPlayer1.name, "It should have been Rick Sanchez")

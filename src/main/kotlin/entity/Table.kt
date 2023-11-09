@@ -8,11 +8,6 @@ import java.util.Stack
 data class Table(
     val reserveStack: Stack<Card> = Stack(),
     val drawPile: Stack<Card> = Stack(),
-    val pyramid: MutableList<MutableList<Card?>> = mutableListOf()
-) {
-    init {
-        pyramid.addAll((1..7).map { size ->
-            MutableList(size) { null as Card? }
-        })
-    }
-}
+    val pyramid: MutableList<MutableList<Card?>> = MutableList(7) {
+        row -> MutableList(row + 1) { null } }
+)
