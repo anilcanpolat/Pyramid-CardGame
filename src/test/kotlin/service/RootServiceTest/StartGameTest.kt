@@ -1,12 +1,11 @@
 package service
 
-import entity.*
 import kotlin.test.*
 
 /**
  * Test suite for the RootService's startGame functionality.
  */
-class GameServiceTest {
+class StartGameTest {
 
     private lateinit var rootService: RootService
 
@@ -21,7 +20,8 @@ class GameServiceTest {
     }
 
     /**
-     * Tests the initial game state after starting a new game to ensure that players, draw pile, and pyramid are correctly initialized.
+     * Tests the initial game state after starting a new game to ensure that players,
+     * draw pile, and pyramid are correctly initialized.
      */
     @Test
     fun testStartGame() {

@@ -57,7 +57,6 @@ class ActionRemovePairTest {
     @Test
     fun testValidPairRemovalWithOneCardFromReserve() {
         // Setup the reserve with a card and ensure the pyramid has a matching card
-        val initialScore = gameState.currentPlayer.score
         val cardA = Card(CardSuit.HEARTS, 7)
         gameState.table.reserveStack.push(cardA) // Card from reserve
         val cardB = Card(CardSuit.CLUBS, 8)

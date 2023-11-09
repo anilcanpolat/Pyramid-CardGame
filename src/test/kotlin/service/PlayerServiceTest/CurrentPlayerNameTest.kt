@@ -36,9 +36,11 @@ class CurrentPlayerNameTest {
     @Test
     fun testCurrentPlayerName() {
         // Initially, playerA is the current player, so we check that their name matches.
-        assertEquals("Rick Sanchez", playerService.currentPlayerName(), "The current player's name should be Rick Sanchez.")
+        assertEquals("Rick Sanchez", playerService.currentPlayerName(),
+            "The current player's name should be Rick Sanchez.")
         gameState.switchCurrentPlayer()
         // Assert that playerB's name is not mistakenly returned as the current player's name.
-        assertEquals("Morty Smith", playerService.currentPlayerName(), "The current player's name should not be Jerry Smith.")
+        assertEquals("Morty Smith", playerService.currentPlayerName(),
+            "The current player's name should not be Jerry Smith.")
     }
 }
