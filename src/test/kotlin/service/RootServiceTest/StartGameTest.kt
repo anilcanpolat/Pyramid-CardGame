@@ -1,5 +1,6 @@
 package service
 
+import view.Refreshable
 import kotlin.test.*
 
 /**
@@ -8,14 +9,17 @@ import kotlin.test.*
 class StartGameTest {
 
     private lateinit var rootService: RootService
+    private lateinit var refreshingService: AbstractRefreshingService
 
     /**
      * Sets up the test environment before each test, initializing the RootService and starting a new game.
      */
     @BeforeTest
     fun setUp() {
-        rootService = RootService()
         // Start the game with two players to set up the currentGame state.
+        val refreshables = mutableListOf<Refreshable>()
+        refreshingService = object : AbstractRefreshingService(refreshables) {}
+        rootService = RootService(refreshingService)
         rootService.startGame("Rick Sanchez", "Morty Smith")
     }
 

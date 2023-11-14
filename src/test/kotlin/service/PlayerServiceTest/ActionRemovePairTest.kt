@@ -2,6 +2,7 @@ package service.PlayerServiceTest
 
 import entity.*
 import service.*
+import view.Refreshable
 import kotlin.test.*
 import java.util.*
 
@@ -14,6 +15,7 @@ class ActionRemovePairTest {
     private lateinit var playerService: PlayerService
     private lateinit var playerA: Player
     private lateinit var playerB: Player
+    private lateinit var refreshingService: AbstractRefreshingService
 
     /**
      * Sets up a game state with players and empty card stacks before each test.
@@ -25,8 +27,10 @@ class ActionRemovePairTest {
         val reserveStack = Stack<Card>()
         val drawPile = Stack<Card>()
         val table = Table(reserveStack, drawPile)
+        val refreshables = mutableListOf<Refreshable>()
+        refreshingService = object : AbstractRefreshingService(refreshables) {}
         gameState = GameState(table, playerA, playerB)
-        playerService = PlayerService(gameState)
+        playerService = PlayerService(gameState, refreshingService)
 
     }
 
@@ -37,18 +41,73 @@ class ActionRemovePairTest {
     fun testValidPairRemovalFromPyramid() {
         // Assuming the pyramid has been setup with the right cards
 
-        val cardA = Card(CardSuit.HEARTS, 7)  // Any value other than Ace (1)
-        val cardB = Card(CardSuit.CLUBS, 8)   // Any value that sums with cardA to 15
-        gameState.table.pyramid[1][1] = cardA
-        gameState.table.pyramid[2][1] = cardB
+        val cardA = Card(CardSuit.HEARTS, 7)
+        val cardB = Card(CardSuit.CLUBS, 8)
+        val cardC = Card(CardSuit.DIAMONDS, 5)
+        val cardD = Card(CardSuit.SPADES, 1)
+        val cardE = Card(CardSuit.DIAMONDS, 4)
+        val cardF = Card(CardSuit.SPADES, 11)
+
+        gameState.table.pyramid[0][0] = cardA
+        gameState.table.pyramid[1][0] = cardB
+        gameState.table.pyramid[1][1] = cardC
+        gameState.table.pyramid[2][0] = cardD
+        gameState.table.pyramid[2][1] = cardE
+        gameState.table.pyramid[2][2] = cardF
 
         playerService.actionRemovePair(cardA, cardB, false)
+        playerService.actionRemovePair(cardC, cardD, false)
+        playerService.actionRemovePair(cardE, cardF, false)
 
         /*Requires Refreshables
         assertEquals(initialScore + 2, gameState.currentPlayer.score)
 */
         assertNull(gameState.table.pyramid.find { row -> row.contains(cardA) })
         assertNull(gameState.table.pyramid.find { row -> row.contains(cardB) })
+    }
+
+    @Test
+    fun testMakeNeighbourVisibleWhenPairRemovalFromPyramid() {
+
+        //New Game had to be initiated, since other test methods interrupt
+        playerA = Player("Rick Sanchez")
+        playerB = Player("Morty Smith")
+        val reserveStack = Stack<Card>()
+        val drawPile = Stack<Card>()
+        val table = Table(reserveStack, drawPile)
+        gameState = GameState(table, playerA, playerB)
+        playerService = PlayerService(gameState, refreshingService)
+
+        val cardA = Card(CardSuit.HEARTS, 7)
+        val cardB = Card(CardSuit.CLUBS, 8)
+        val cardC = Card(CardSuit.DIAMONDS, 5)
+        val cardD = Card(CardSuit.SPADES, 1)
+        val cardE = Card(CardSuit.DIAMONDS, 4)
+        val cardF = Card(CardSuit.SPADES, 11)
+
+        gameState.table.pyramid[0][0] = cardA
+        gameState.table.pyramid[2][0] = cardB
+        gameState.table.pyramid[3][2] = cardC
+        gameState.table.pyramid[4][2] = cardD
+        gameState.table.pyramid[5][1] = cardE
+        gameState.table.pyramid[5][2] = cardF
+
+        playerService.actionRemovePair(cardA, cardB, false)
+        playerService.actionRemovePair(cardC, cardD, false)
+        playerService.actionRemovePair(cardE, cardF, false)
+
+        gameState.table.pyramid[2][1]?.let { assertTrue(it.visible) }
+        gameState.table.pyramid[3][1]?.let { assertTrue(it.visible) }
+        gameState.table.pyramid[3][3]?.let { assertTrue(it.visible) }
+        gameState.table.pyramid[4][1]?.let { assertTrue(it.visible) }
+        gameState.table.pyramid[4][3]?.let { assertTrue(it.visible) }
+        gameState.table.pyramid[5][0]?.let { assertTrue(it.visible) }
+        gameState.table.pyramid[5][2]?.let { assertTrue(it.visible) }
+        gameState.table.pyramid[5][3]?.let { assertTrue(it.visible) }
+        gameState.table.pyramid[1][0]?.let { assertFalse(it.visible) }
+        gameState.table.pyramid[1][1]?.let { assertFalse(it.visible) }
+        gameState.table.pyramid[6][0]?.let { assertFalse(it.visible) }
+        gameState.table.pyramid[6][5]?.let { assertFalse(it.visible) }
     }
 
     /**

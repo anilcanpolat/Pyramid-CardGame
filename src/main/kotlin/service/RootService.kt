@@ -4,7 +4,7 @@ import entity.*
 import java.util.Stack
 import kotlin.random.Random
 
-class RootService {
+class RootService(private val refreshingService: AbstractRefreshingService) {
     lateinit var currentGame: GameState
 
     //Creates a MutableList of 52 Cards
@@ -64,6 +64,12 @@ class RootService {
         val playerB = Player(bName)
         transferCardsToPyramid(cards, table.pyramid)
         currentGame = GameState(table, playerA, playerB)
+        refreshingService.onAllRefreshables {
+            onGameStart(playerA.name,
+            playerB.name,
+            currentGame.table.pyramid,
+                currentGame.table.drawPile)
+        }
     }
 
     //Requires player names as inputs and starts the game
@@ -81,6 +87,12 @@ class RootService {
         else if
             (currentGame.playerA.score < currentGame.playerB.score) println("${currentGame.playerA.name} has won")
         else println("It's a draw ¯\\_(ツ)_/¯")
+
+        refreshingService.onAllRefreshables {
+            onGameFinished(
+                currentGame.playerA.score,
+                currentGame.playerB.score)
+        }
 
         return currentGame.sitOutCount == 2 ||
                 currentGame.table.pyramid.all { row ->

@@ -1,7 +1,9 @@
 package service.PlayerServiceTest
 
 import entity.*
+import service.AbstractRefreshingService
 import service.PlayerService
+import view.Refreshable
 import java.util.*
 import kotlin.test.*
 
@@ -14,6 +16,7 @@ class ActionDrawCardTest {
     private lateinit var playerService: PlayerService
     private lateinit var playerA: Player
     private lateinit var playerB: Player
+    private lateinit var refreshingService: AbstractRefreshingService
 
     /**
      * Sets up the test environment with default game state, table, and players.
@@ -25,8 +28,10 @@ class ActionDrawCardTest {
         val reserveStack = Stack<Card>()
         val drawPile = Stack<Card>()
         val table = Table(reserveStack, drawPile)
+        val refreshables = mutableListOf<Refreshable>()
+        refreshingService = object : AbstractRefreshingService(refreshables) {}
         gameState = GameState(table, playerA, playerB)
-        playerService = PlayerService(gameState)
+        playerService = PlayerService(gameState, refreshingService)
     }
 
     /**

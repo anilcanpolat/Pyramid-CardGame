@@ -1,6 +1,8 @@
 package service.RootServiceTest
 
+import service.AbstractRefreshingService
 import service.RootService
+import view.Refreshable
 import kotlin.test.*
 
 /**
@@ -9,13 +11,16 @@ import kotlin.test.*
 class RootServiceTest {
 
     private lateinit var rootService: RootService
+    private lateinit var refreshingService: AbstractRefreshingService
 
     /**
      * Prepares the testing environment by creating an instance of RootService before each test.
      */
     @BeforeTest
     fun setUp() {
-        rootService = RootService()
+        val refreshables = mutableListOf<Refreshable>()
+        refreshingService = object : AbstractRefreshingService(refreshables) {}
+        rootService = RootService(refreshingService)
     }
 
     /**

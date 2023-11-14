@@ -2,9 +2,9 @@ package service
 
 import view.Refreshable
 
-abstract class AbstractRefreshingService {
+abstract class AbstractRefreshingService(
+    var refreshables: MutableList<Refreshable>) {
 
-    private val refreshables = mutableListOf<Refreshable>()
 
     /**
      * adds a [Refreshable] to the list that gets called
@@ -31,5 +31,7 @@ abstract class AbstractRefreshingService {
      *
      */
     fun onAllRefreshables(method: Refreshable.() -> Unit) =
-        refreshables.forEach { it.method() }
+        refreshables.forEach {
+            it.method()
+        }
 }
