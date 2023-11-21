@@ -1,8 +1,13 @@
 package service.RootServiceTest
 
+import entity.Card
+import entity.GameState
+import entity.Player
+import entity.Table
 import service.AbstractRefreshingService
 import service.RootService
 import view.Refreshable
+import java.util.*
 import kotlin.test.*
 
 /**
@@ -11,16 +16,12 @@ import kotlin.test.*
 class RootServiceTest {
 
     private lateinit var rootService: RootService
-    private lateinit var refreshingService: AbstractRefreshingService
-
     /**
      * Prepares the testing environment by creating an instance of RootService before each test.
      */
     @BeforeTest
     fun setUp() {
-        val refreshables = mutableListOf<Refreshable>()
-        refreshingService = object : AbstractRefreshingService(refreshables) {}
-        rootService = RootService(refreshingService)
+        rootService = RootService()
     }
 
     /**

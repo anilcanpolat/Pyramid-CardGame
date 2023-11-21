@@ -9,8 +9,9 @@ data class GameState(
     val table: Table,
     val playerA: Player,
     val playerB: Player,
-    var currentPlayer: Player = if (Random.nextBoolean()) playerA else playerB
+
 ) {
+    var currentPlayer: Player = if (Random.nextBoolean()) playerA else playerB
     var sitOutCount: Int = 0 // Counts how many consecutive times players have passed
 
     init {

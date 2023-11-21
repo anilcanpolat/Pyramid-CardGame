@@ -1,17 +1,26 @@
 package service
 
+import view.GameFinishedMenuScene
+import view.GameScene
+import view.NewGameMenuScene
 import view.Refreshable
 
-abstract class AbstractRefreshingService(
-    var refreshables: MutableList<Refreshable>) {
+abstract class AbstractRefreshingService {
 
-
+    private val refreshables = mutableListOf<Refreshable>()
     /**
      * adds a [Refreshable] to the list that gets called
      * whenever [onAllRefreshables] is used.
      */
-    open fun addRefreshable(newRefreshable: Refreshable) {
+    open fun addRefreshable(
+        newRefreshable: Refreshable,
+        gameScene: GameScene,
+        gameFinishedMenuScene: GameFinishedMenuScene,
+        newGameMenuScene: NewGameMenuScene
+    ) {
         refreshables += newRefreshable
+        refreshables += gameScene
+        refreshables += newGameMenuScene
     }
 
     /**

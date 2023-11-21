@@ -3,6 +3,7 @@ package service.PlayerServiceTest
 import entity.*
 import service.AbstractRefreshingService
 import service.PlayerService
+import service.RootService
 import view.Refreshable
 import java.util.*
 import kotlin.test.*
@@ -12,11 +13,11 @@ import kotlin.test.*
  */
 class ActionDrawCardTest {
 
+    private lateinit var rootService: RootService
     private lateinit var gameState: GameState
     private lateinit var playerService: PlayerService
     private lateinit var playerA: Player
     private lateinit var playerB: Player
-    private lateinit var refreshingService: AbstractRefreshingService
 
     /**
      * Sets up the test environment with default game state, table, and players.
@@ -28,10 +29,10 @@ class ActionDrawCardTest {
         val reserveStack = Stack<Card>()
         val drawPile = Stack<Card>()
         val table = Table(reserveStack, drawPile)
-        val refreshables = mutableListOf<Refreshable>()
-        refreshingService = object : AbstractRefreshingService(refreshables) {}
         gameState = GameState(table, playerA, playerB)
-        playerService = PlayerService(gameState, refreshingService)
+        rootService = RootService()
+        rootService.currentGame = gameState
+        playerService = PlayerService(rootService)
     }
 
     /**
@@ -49,7 +50,7 @@ class ActionDrawCardTest {
         }
 
         // Add a card to the draw pile and test the draw card functionality
-        val cardA = Card(CardSuit.HEARTS, 7)
+        val cardA = Card(CardSuit.HEARTS, CardValue.SEVEN)
         gameState.table.drawPile.push(cardA)
 
         assertEquals(1, gameState.table.drawPile.size)

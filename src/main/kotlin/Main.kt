@@ -1,6 +1,6 @@
-import view.SopraApplication
+import view.PyramidApplication
 
 fun main() {
-    SopraApplication().show()
+    PyramidApplication().show()
     println("Application ended. Goodbye")
 }

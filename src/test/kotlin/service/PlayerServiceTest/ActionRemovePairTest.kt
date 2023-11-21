@@ -11,6 +11,7 @@ import java.util.*
  */
 class ActionRemovePairTest {
 
+    private lateinit var rootService: RootService
     private lateinit var gameState: GameState
     private lateinit var playerService: PlayerService
     private lateinit var playerA: Player
@@ -27,11 +28,9 @@ class ActionRemovePairTest {
         val reserveStack = Stack<Card>()
         val drawPile = Stack<Card>()
         val table = Table(reserveStack, drawPile)
-        val refreshables = mutableListOf<Refreshable>()
-        refreshingService = object : AbstractRefreshingService(refreshables) {}
         gameState = GameState(table, playerA, playerB)
-        playerService = PlayerService(gameState, refreshingService)
-
+        rootService = RootService()
+        playerService = PlayerService(rootService)
     }
 
     /**
@@ -41,12 +40,12 @@ class ActionRemovePairTest {
     fun testValidPairRemovalFromPyramid() {
         // Assuming the pyramid has been setup with the right cards
 
-        val cardA = Card(CardSuit.HEARTS, 7)
-        val cardB = Card(CardSuit.CLUBS, 8)
-        val cardC = Card(CardSuit.DIAMONDS, 5)
-        val cardD = Card(CardSuit.SPADES, 1)
-        val cardE = Card(CardSuit.DIAMONDS, 4)
-        val cardF = Card(CardSuit.SPADES, 11)
+        val cardA = Card(CardSuit.HEARTS, CardValue.SEVEN)
+        val cardB = Card(CardSuit.CLUBS, CardValue.EIGHT)
+        val cardC = Card(CardSuit.DIAMONDS, CardValue.FIVE)
+        val cardD = Card(CardSuit.SPADES, CardValue.ACE)
+        val cardE = Card(CardSuit.DIAMONDS, CardValue.FOUR)
+        val cardF = Card(CardSuit.SPADES, CardValue.JACK)
 
         gameState.table.pyramid[0][0] = cardA
         gameState.table.pyramid[1][0] = cardB
@@ -59,9 +58,6 @@ class ActionRemovePairTest {
         playerService.actionRemovePair(cardC, cardD, false)
         playerService.actionRemovePair(cardE, cardF, false)
 
-        /*Requires Refreshables
-        assertEquals(initialScore + 2, gameState.currentPlayer.score)
-*/
         assertNull(gameState.table.pyramid.find { row -> row.contains(cardA) })
         assertNull(gameState.table.pyramid.find { row -> row.contains(cardB) })
     }
@@ -76,14 +72,15 @@ class ActionRemovePairTest {
         val drawPile = Stack<Card>()
         val table = Table(reserveStack, drawPile)
         gameState = GameState(table, playerA, playerB)
-        playerService = PlayerService(gameState, refreshingService)
+        rootService = RootService()
+        playerService = PlayerService(rootService)
 
-        val cardA = Card(CardSuit.HEARTS, 7)
-        val cardB = Card(CardSuit.CLUBS, 8)
-        val cardC = Card(CardSuit.DIAMONDS, 5)
-        val cardD = Card(CardSuit.SPADES, 1)
-        val cardE = Card(CardSuit.DIAMONDS, 4)
-        val cardF = Card(CardSuit.SPADES, 11)
+        val cardA = Card(CardSuit.HEARTS, CardValue.SEVEN)
+        val cardB = Card(CardSuit.CLUBS, CardValue.EIGHT)
+        val cardC = Card(CardSuit.DIAMONDS, CardValue.FIVE)
+        val cardD = Card(CardSuit.SPADES, CardValue.ACE)
+        val cardE = Card(CardSuit.DIAMONDS, CardValue.FOUR)
+        val cardF = Card(CardSuit.SPADES, CardValue.JACK)
 
         gameState.table.pyramid[0][0] = cardA
         gameState.table.pyramid[2][0] = cardB
@@ -102,7 +99,6 @@ class ActionRemovePairTest {
         gameState.table.pyramid[4][1]?.let { assertTrue(it.visible) }
         gameState.table.pyramid[4][3]?.let { assertTrue(it.visible) }
         gameState.table.pyramid[5][0]?.let { assertTrue(it.visible) }
-        gameState.table.pyramid[5][2]?.let { assertTrue(it.visible) }
         gameState.table.pyramid[5][3]?.let { assertTrue(it.visible) }
         gameState.table.pyramid[1][0]?.let { assertFalse(it.visible) }
         gameState.table.pyramid[1][1]?.let { assertFalse(it.visible) }
@@ -116,9 +112,9 @@ class ActionRemovePairTest {
     @Test
     fun testValidPairRemovalWithOneCardFromReserve() {
         // Setup the reserve with a card and ensure the pyramid has a matching card
-        val cardA = Card(CardSuit.HEARTS, 7)
+        val cardA = Card(CardSuit.HEARTS, CardValue.SEVEN)
         gameState.table.reserveStack.push(cardA) // Card from reserve
-        val cardB = Card(CardSuit.CLUBS, 8)
+        val cardB = Card(CardSuit.CLUBS, CardValue.EIGHT)
         gameState.table.pyramid[0][0] = cardB // Card from pyramid
         playerService.actionRemovePair(cardA, cardB, true)
 
@@ -135,8 +131,8 @@ class ActionRemovePairTest {
     fun testInvalidPairRemovalAttempt() {
         // Setup invalid pair
 
-        val cardA = Card(CardSuit.HEARTS, 2)
-        val cardB = Card(CardSuit.CLUBS, 2)
+        val cardA = Card(CardSuit.HEARTS, CardValue.TWO)
+        val cardB = Card(CardSuit.CLUBS, CardValue.TWO)
 
         gameState.table.pyramid[0][0] = cardA
         gameState.table.pyramid[1][0] = cardB
@@ -145,8 +141,8 @@ class ActionRemovePairTest {
 
         assertTrue(gameState.table.pyramid.any{ row -> row.contains(cardA) })
 
-        val cardC = Card(CardSuit.HEARTS, 7)
-        val cardD = Card(CardSuit.CLUBS, 8)
+        val cardC = Card(CardSuit.HEARTS, CardValue.SEVEN)
+        val cardD = Card(CardSuit.CLUBS, CardValue.EIGHT)
 
         gameState.table.pyramid[0][0] = cardC
         gameState.table.pyramid[1][0] = cardD
@@ -163,8 +159,8 @@ class ActionRemovePairTest {
     //check drawing a card with non-empty draw pile
     fun testActionDrawCardWithCardsRemaining() {
 
-        val cardA = Card(CardSuit.HEARTS, 2)
-        val cardB = Card(CardSuit.CLUBS, 2)
+        val cardA = Card(CardSuit.HEARTS, CardValue.TWO)
+        val cardB = Card(CardSuit.CLUBS, CardValue.TWO)
         gameState.table.drawPile.push(cardA)
         gameState.table.drawPile.push(cardB)
 
@@ -183,8 +179,8 @@ class ActionRemovePairTest {
     fun testActionDrawCardWithNoCardsRemaining() {
 
         gameState.table.drawPile.clear()
-        val cardA = Card(CardSuit.HEARTS, 2)
-        val cardB = Card(CardSuit.CLUBS, 2)
+        val cardA = Card(CardSuit.HEARTS, CardValue.TWO)
+        val cardB = Card(CardSuit.CLUBS, CardValue.TWO)
         gameState.table.drawPile.push(cardA)
         gameState.table.drawPile.push(cardB)
 

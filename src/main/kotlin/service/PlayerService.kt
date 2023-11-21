@@ -10,8 +10,9 @@ import java.lang.IllegalStateException
  * getting the position of a specific card, validating card pairs, removing cards from the pyramid,
  * handling card pair removal action, drawing a card from the draw stack, and allowing a player to sit out.
  */
-class PlayerService(private val gameState: GameState, private val refreshingService: AbstractRefreshingService) {
+class PlayerService(private val rootService: RootService): AbstractRefreshingService() {
 
+    private val gameState: GameState = rootService.currentGame
     /**
      * Makes neighbouring cards visible when a card is removed from the pyramid.
      *
@@ -68,15 +69,15 @@ class PlayerService(private val gameState: GameState, private val refreshingServ
      * @return an integer code representing the validation result.
      */
     private fun isValidPair(cardA: Card, cardB: Card): Int {
-        if (cardA.value == 1 && cardB.value == 1) {
+        if (cardA.value == CardValue.ACE && cardB.value == CardValue.ACE) {
             // Two Aces cannot form a pair
             return -1
         }
-        if (cardA.value == 1 || cardB.value == 1) {
+        if (cardA.value == CardValue.ACE || cardB.value == CardValue.ACE) {
             // If either card is an Ace, it's a valid pair
             return 1
         }
-        if (cardA.value + cardB.value == 15) {
+        if (cardA.value.toInteger() + cardB.value.toInteger() == 15) {
             return 2
         }
         return -1
@@ -142,10 +143,10 @@ class PlayerService(private val gameState: GameState, private val refreshingServ
             if (indicator == 1) gameState.currentPlayer.score++
             if (indicator == 2) gameState.currentPlayer.score += 2
 
-            refreshingService.onAllRefreshables {
+            onAllRefreshables {
                 onScoreUpdate(
                     gameState.currentPlayer.score,
-                    gameState.currentPlayer.name
+                    gameState.currentPlayer.name,
                 )
             }
 
@@ -160,23 +161,23 @@ class PlayerService(private val gameState: GameState, private val refreshingServ
             // Filter out the null values before passing the list
             val nonNullableNowVisiblePositions = nowVisiblePositions.filterNotNull()
 
-            refreshingService.onAllRefreshables {
+            onAllRefreshables {
                 if (posA != null && posB != null) {
                     onActionRemovePair(
                         gameState.currentPlayer,
                         posA, posB, reserveTop,
-                        nonNullableNowVisiblePositions // pass the non-nullable list here
+                        nonNullableNowVisiblePositions.toMutableList() // pass the non-nullable list here
                     )
                 }
             }
         }
     }
-        /**
-         * Draws a card from the draw stack, makes it visible, and adds it to the reserve stack.
-         */
+    /**
+     * Draws a card from the draw stack, makes it visible, and adds it to the reserve stack.
+     */
     fun actionDrawCard(): Unit {
         //Check if there are cards remaining in the draw pile
-        if (gameState.table.drawPile.isNullOrEmpty()) {
+        if (gameState.table.drawPile.isEmpty()) {
             //No cards left in the draw pile
             throw IllegalStateException("There is no card to be drawn from the pile")
         }
@@ -187,7 +188,7 @@ class PlayerService(private val gameState: GameState, private val refreshingServ
         //sitOutCount is refreshed and player is switched
         gameState.sitOutCount = 0
         gameState.switchCurrentPlayer()
-        refreshingService.onAllRefreshables { onActionDrawCard(gameState.currentPlayer, drawnCard) }
+        onAllRefreshables { onActionDrawCard(gameState.currentPlayer, drawnCard) }
     }
 
     /**
@@ -196,8 +197,8 @@ class PlayerService(private val gameState: GameState, private val refreshingServ
     fun actionSitOut(): Unit {
         gameState.switchCurrentPlayer()
         gameState.sitOutCount++
-
-        refreshingService.onAllRefreshables { onActionSitOut(gameState.currentPlayer) }
+        if(gameState.sitOutCount == 2) rootService.gameFinished()
+        onAllRefreshables { onActionSitOut(gameState.currentPlayer) }
     }
 
     /**

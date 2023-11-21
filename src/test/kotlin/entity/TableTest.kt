@@ -26,8 +26,8 @@ class TableTest {
             testStack2.push(CardTest.testCard2)
 
             //initiating the testSample1 as modified and non-empty stack and array
-            testPyramid[0][0] = Card(CardSuit.DIAMONDS, 4, false)
-            testPyramid[1][0] = Card(CardSuit.CLUBS, 12, true)
+            testPyramid[0][0] = Card(CardSuit.DIAMONDS, CardValue.FOUR, false)
+            testPyramid[1][0] = Card(CardSuit.CLUBS, CardValue.QUEEN, true)
 
             testTable1 = Table(testStack1, testStack2, testPyramid)
             }
@@ -44,8 +44,8 @@ class TableTest {
         assertEquals(testStack1, testTable1.reserveStack, "Reserve stack is not equal")
         assertEquals(testStack2, testTable1.drawPile,"Draw pile is not equal")
 
-        assertEquals(testPyramid[0][0],Card(CardSuit.DIAMONDS, 4, false))
-        assertEquals(testPyramid[1][0],Card(CardSuit.CLUBS, 12, true))
+        assertEquals(testPyramid[0][0],Card(CardSuit.DIAMONDS, CardValue.FOUR, false))
+        assertEquals(testPyramid[1][0],Card(CardSuit.CLUBS, CardValue.QUEEN, true))
 
     }
 }

@@ -9,7 +9,6 @@ import kotlin.test.*
 class StartGameTest {
 
     private lateinit var rootService: RootService
-    private lateinit var refreshingService: AbstractRefreshingService
 
     /**
      * Sets up the test environment before each test, initializing the RootService and starting a new game.
@@ -17,9 +16,7 @@ class StartGameTest {
     @BeforeTest
     fun setUp() {
         // Start the game with two players to set up the currentGame state.
-        val refreshables = mutableListOf<Refreshable>()
-        refreshingService = object : AbstractRefreshingService(refreshables) {}
-        rootService = RootService(refreshingService)
+        rootService = RootService()
         rootService.startGame("Rick Sanchez", "Morty Smith")
     }
 
