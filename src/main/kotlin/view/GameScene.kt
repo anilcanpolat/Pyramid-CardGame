@@ -24,7 +24,7 @@ import java.util.*
  */
 class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Refreshable {
 
-    fun testDrawPile(currentGame: GameState) {
+    private fun testDrawPile(currentGame: GameState) {
         val testCard = Card(CardSuit.SPADES, CardValue.FOUR)
         val cardView = initializeCardView(testCard, true)
         currentGame.table.drawPile.push(testCard)
@@ -33,8 +33,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
     }
 
     private val drawPile = LabeledStackView(posX = 1600, posY = 750,"Draw Pile").apply { this.
-        onMouseClicked ={ _: MouseEvent ->
-            root.playerService.actionDrawCard()
+        onMouseClicked ={root.playerService.actionDrawCard()
 
         }
     }
@@ -72,7 +71,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         val cardWidth = 100
         val cardHeight = 150
         val horizontalSpacing = 40
-        val verticalSpacing = 30
+        val verticalSpacing = 15
 
         // Calculate the starting X and Y positions
         val startX = (this.width - cardWidth) / 2
@@ -97,9 +96,8 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
                     val y = startY + row * (cardHeight - verticalSpacing)
 
                     // Set positions and add to scene
-                    cardView.posX = x.toDouble()
+                    cardView.posX = x
                     cardView.posY = y.toDouble()
-
 
                     addComponents(cardView)
                     pyramidView[row][col] = cardView
@@ -129,7 +127,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
 
         val toReturn= mutableListOf<Card>()
         listList.forEach { row ->
-            row.forEach { it ->
+            row.forEach {
                 if (it != null) {
                     toReturn.add(it)
                 }
@@ -164,8 +162,6 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
             cardView.showBack()
         }
 
-        // Event handling for when a card is clicked
-
         return cardView
     }
 
@@ -188,7 +184,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
             }
 
             // Check if the pair is valid and process accordingly
-            if (fromReserve != null && fromPyramid != null && isValidPair(fromReserve, fromPyramid)) {
+            if (isValidPair(fromReserve, fromPyramid)) {
                 root.playerService.actionRemovePair(fromReserve, fromPyramid, useReserve)
 
                 reservePile.pop() // Pop from reserve if it's a part of the pair
@@ -209,7 +205,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
             val card1 = cardMap.backward(selectedCards[0])
             val card2 = cardMap.backward(selectedCards[1])
 
-            if (card1 != null && card2 != null && isValidPair(card1, card2)) {
+            if (isValidPair(card1, card2)) {
                 root.playerService.actionRemovePair(card1, card2, false)
 
                 // Remove card views from UI
@@ -261,9 +257,6 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         }
     }
 
-    //val as = emptyList<LabeledStackView>().toMutableList()
-    //private val listOfTableCardsLabel = listOf(tableCard0, tableCard1, tableCard2).toMutableList()
-
     private val passButton = Button(
         width = 150, height = 150,
         posX = 1620, posY = 550,
@@ -277,13 +270,13 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
     private val scoreLabel1 = Label(width = 300, height = 30, posX = 100, posY = 40,
         font = Font(size = 24,fontWeight = Font.FontWeight.BOLD)
     ).apply {
-        text = "Player 1: 0"
+        text = "${root.currentGame.playerA.name}: ${root.currentGame.playerA.score}"
     }
 
     private val scoreLabel2 = Label(width = 300, height = 30, posX = 1500, posY = 40,
         font = Font(size = 24,fontWeight = Font.FontWeight.BOLD)
     ).apply {
-        text = "Player 2: 0"
+        text = "${root.currentGame.playerB.name}: ${root.currentGame.playerB.score}"
     }
 
     /**
@@ -303,7 +296,6 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
             scoreLabel1,scoreLabel2,
             passButton,
             )
-
     }
 
     /**
@@ -314,10 +306,10 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
     * @param player2Name Name of the second player.
     * @param currentPlayer The player whose turn is currently active.
     */
-    fun updatePlayerDisplay(player1Name: String, player2Name: String, currentPlayer: Player) {
+    private fun updatePlayerDisplay(player1Name: String, player2Name: String, currentPlayer: Player) {
         // Update player names and scores
-        scoreLabel1.text = "$player1Name Score: ${root.currentGame?.playerA?.score}"
-        scoreLabel2.text = "$player2Name Score: ${root.currentGame?.playerB?.score}"
+        scoreLabel1.text = "$player1Name Score: ${root.currentGame.playerA.score}"
+        scoreLabel2.text = "$player2Name Score: ${root.currentGame.playerB.score}"
 
         // Highlight the current player
         if (currentPlayer.name == player1Name) {
@@ -341,7 +333,6 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
     override fun onGameStart(name1: String, name2: String, pyramid: MutableList<MutableList<Card?>>, drawPile: Stack<Card>) {
 
         val game = root.currentGame
-        checkNotNull(game) { "No started game found." }
         cardMap.clear()
 
         val cardImageLoader = CardImageLoader()
@@ -399,7 +390,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
      * @param nextPlayer The player who will take the next turn.
      */
     override fun onActionSitOut(nextPlayer: Player) {
-        val game = root.currentGame ?: return // Ensure the game is not null
+        val game = root.currentGame // Ensure the game is not null
 
         val player1Name = game.playerA.name
         val player2Name = game.playerB.name
@@ -416,7 +407,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
      * @param drawnCard The card that has been drawn.
      */
     override fun onActionDrawCard(nextPlayer: Player, drawnCard: Card) {
-        val game = root.currentGame ?: return // Ensure the game is not null
+        val game = root.currentGame// Ensure the game is not null
 
         val cardView = cardMap.forward(drawnCard)
 
@@ -464,7 +455,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         nowVisible.forEach { position -> revealCardAtPosition(position) }
 
         // Retrieve game state and player names
-        val game = root.currentGame ?: return // Ensure the game is not null
+        val game = root.currentGame // Ensure the game is not null
         val player1Name = game.playerA.name
         val player2Name = game.playerB.name
 

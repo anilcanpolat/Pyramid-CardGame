@@ -1,7 +1,6 @@
 package service
 
 import entity.*
-import view.Refreshable
 import java.lang.IllegalStateException
 
 /**
@@ -10,9 +9,9 @@ import java.lang.IllegalStateException
  * getting the position of a specific card, validating card pairs, removing cards from the pyramid,
  * handling card pair removal action, drawing a card from the draw stack, and allowing a player to sit out.
  */
-class PlayerService(private val rootService: RootService): AbstractRefreshingService() {
+class PlayerService(rootService: RootService): AbstractRefreshingService() {
 
-    private val gameState: GameState = rootService.currentGame
+    private val gameState = rootService.currentGame
     /**
      * Makes neighbouring cards visible when a card is removed from the pyramid.
      *
@@ -20,20 +19,23 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * @param column the column index of the card.
      */
     private fun makeNeighboursVisible(row: Int, column: Int): MutableList<Card?> {
+        val nowVisibleCards: MutableList<Card?> = mutableListOf()
 
-        var nowVisibleCards: MutableList<Card?> = mutableListOf()
-        //Left makeNeighbour exists and not null
-        if (column != 0 && gameState.table.pyramid[row][column - 1] != null) {
+        // Left neighbor
+        if (column > 0 && gameState.table.pyramid[row][column - 1] != null) {
             gameState.table.pyramid[row][column - 1]?.visible = true
             nowVisibleCards.add(gameState.table.pyramid[row][column - 1])
         }
-        //Right neighbour exists and not null
-        if (column == gameState.table.pyramid[row].size && gameState.table.pyramid[row][column + 1] != null) {
+
+        // Right neighbor
+        if (column < gameState.table.pyramid[row].size - 1 && gameState.table.pyramid[row][column + 1] != null) {
             gameState.table.pyramid[row][column + 1]?.visible = true
             nowVisibleCards.add(gameState.table.pyramid[row][column + 1])
         }
+
         return nowVisibleCards
     }
+
 
     /**
      * Retrieves the position of the specified card in the pyramid.
@@ -69,7 +71,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * @return an integer code representing the validation result.
      */
     private fun isValidPair(cardA: Card, cardB: Card): Int {
-        if (cardA.value == CardValue.ACE && cardB.value == CardValue.ACE) {
+        if (cardA.value == CardValue.ACE && cardB.value ==  CardValue.ACE) {
             // Two Aces cannot form a pair
             return -1
         }
@@ -88,7 +90,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      *
      * @param card the card to be removed from the pyramid.
      */
-    private fun removeFromPyramid(card: entity.Card): MutableList<Card?> {
+    private fun removeFromPyramid(card: Card): MutableList<Card?> {
 
         //Checks if the position is not null, as it is nullable*/
         val cardPosition = getPosOfCard(card)
@@ -104,41 +106,41 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
     /**
      * Performs the action of removing a pair of cards from the pyramid or the reserve stack.
      *
-     * @param CardA the first card.
-     * @param CardB the second card.
+     * @param cardA the first card.
+     * @param cardB the second card.
      * @param useReserve a boolean indicating if the reserve stack should be used.
      */
     fun actionRemovePair(
-        CardA: entity.Card,
-        CardB: entity.Card,
+        cardA: Card,
+        cardB: Card,
         useReserve: Boolean
-    ): Unit {
+    ) {
         var reserveTop: Card? = null
         if(!gameState.table.reserveStack.empty()) reserveTop = gameState.table.reserveStack.last()
 
         //Validates that, they can be unveiled
-        val indicator = isValidPair(CardA, CardB)
-        val posA = getPosOfCard(CardA)
-        val posB = getPosOfCard(CardB)
-        var nowVisibleCards: MutableList<Card?> = mutableListOf()
+        val indicator = isValidPair(cardA, cardB)
+        val posA = getPosOfCard(cardA)
+        val posB = getPosOfCard(cardB)
+        val nowVisibleCards: MutableList<Card?>
         if (indicator > 0) {
             //There is at one Card in the reserve that is going to be nulled
             if (useReserve) {
                 //CardA is on the reserveStack
-                if (getPosOfCard(CardA) == null && getPosOfCard(CardB) != null) {
-                    nowVisibleCards = removeFromPyramid(CardB)
+                if (getPosOfCard(cardA) == null && getPosOfCard(cardB) != null) {
+                    nowVisibleCards = removeFromPyramid(cardB)
                     nowVisibleCards.add(gameState.table.reserveStack.pop())  //Sets the Card on the ReserveStack null
                 }
                 //CardB is on the reserveStack
-                else if (getPosOfCard(CardA) != null && getPosOfCard(CardB) == null) {
-                    nowVisibleCards = removeFromPyramid(CardA)
+                else if (getPosOfCard(cardA) != null && getPosOfCard(cardB) == null) {
+                    nowVisibleCards = removeFromPyramid(cardA)
                     nowVisibleCards.add(gameState.table.reserveStack.pop())  //Sets the Card on the ReserveStack null
                 } else {
                     throw IllegalStateException("There isn't any Card to remove in the pyramid")
                 }
             } else { //Cards are on the Pyramid
-                nowVisibleCards = removeFromPyramid(CardA)
-                nowVisibleCards.addAll(removeFromPyramid(CardB))
+                nowVisibleCards = removeFromPyramid(cardA)
+                nowVisibleCards.addAll(removeFromPyramid(cardB))
             }
             if (indicator == 1) gameState.currentPlayer.score++
             if (indicator == 2) gameState.currentPlayer.score += 2
@@ -146,27 +148,27 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             onAllRefreshables {
                 onScoreUpdate(
                     gameState.currentPlayer.score,
-                    gameState.currentPlayer.name,
+                    gameState.currentPlayer.name
                 )
             }
 
-            gameState.sitOutCount = 0;
+            gameState.sitOutCount = 0
             gameState.switchCurrentPlayer()
 
-            var nowVisiblePositions: MutableList<Pair<Int, Int>?> = mutableListOf()
+            val nowVisiblePositions: MutableList<Pair<Int, Int>?> = mutableListOf()
             for (card in nowVisibleCards) {
                 nowVisiblePositions.add(card?.let { getPosOfCard(it) })
             }
 
             // Filter out the null values before passing the list
-            val nonNullableNowVisiblePositions = nowVisiblePositions.filterNotNull()
+            val nonNullableNowVisiblePositions = nowVisiblePositions.filterNotNull().toMutableList()
 
             onAllRefreshables {
                 if (posA != null && posB != null) {
                     onActionRemovePair(
                         gameState.currentPlayer,
                         posA, posB, reserveTop,
-                        nonNullableNowVisiblePositions.toMutableList() // pass the non-nullable list here
+                        nonNullableNowVisiblePositions // pass the non-nullable list here
                     )
                 }
             }
@@ -175,7 +177,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
     /**
      * Draws a card from the draw stack, makes it visible, and adds it to the reserve stack.
      */
-    fun actionDrawCard(): Unit {
+    fun actionDrawCard() {
         //Check if there are cards remaining in the draw pile
         if (gameState.table.drawPile.isEmpty()) {
             //No cards left in the draw pile
@@ -194,19 +196,10 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
     /**
      * Increments the sit out count and passes the turn to the next player.
      */
-    fun actionSitOut(): Unit {
+    fun actionSitOut() {
         gameState.switchCurrentPlayer()
         gameState.sitOutCount++
-        if(gameState.sitOutCount == 2) rootService.gameFinished()
-        onAllRefreshables { onActionSitOut(gameState.currentPlayer) }
-    }
 
-    /**
-     * Gets the name of the current player.
-     *
-     * @return a string representing the current player's name.
-     */
-    fun currentPlayerName(): String {
-        return gameState.currentPlayer.name
+        onAllRefreshables { onActionSitOut(gameState.currentPlayer) }
     }
 }

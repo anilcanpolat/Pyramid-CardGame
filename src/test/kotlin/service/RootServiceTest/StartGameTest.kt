@@ -1,6 +1,5 @@
 package service
 
-import view.Refreshable
 import kotlin.test.*
 
 /**
@@ -16,6 +15,7 @@ class StartGameTest {
     @BeforeTest
     fun setUp() {
         // Start the game with two players to set up the currentGame state.
+
         rootService = RootService()
         rootService.startGame("Rick Sanchez", "Morty Smith")
     }

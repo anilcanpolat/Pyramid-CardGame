@@ -10,7 +10,7 @@ import kotlin.test.*
 class PlayerTest {
 
     companion object {
-        public val testPlayer1 = Player("Rick Sanchez")
+        val testPlayer1 = Player("Rick Sanchez")
     }
 
     /**

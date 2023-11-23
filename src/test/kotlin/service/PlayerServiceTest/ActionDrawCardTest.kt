@@ -1,10 +1,8 @@
 package service.PlayerServiceTest
 
 import entity.*
-import service.AbstractRefreshingService
 import service.PlayerService
 import service.RootService
-import view.Refreshable
 import java.util.*
 import kotlin.test.*
 

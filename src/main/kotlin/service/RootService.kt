@@ -46,11 +46,7 @@ class RootService: AbstractRefreshingService()  {
         val cards: MutableList<Card> = createStandardDeck().shuffled().toMutableList()
         
         val pyramid = organizeCardsInPyramid(cards)
-        pyramid.forEach{
-            it -> it.forEach{
-                //println(it?.value)
-        }
-        }
+
         // Initialize the reserve stack and draw pile
         val reserveStack = Stack<Card>()
 
@@ -59,20 +55,18 @@ class RootService: AbstractRefreshingService()  {
         for(card in 28..51) {
             drawPile.push(cards[card])
         }
-        //println("******************")
-        drawPile.forEach{ it->
-            //println(it.value)
-        }
+
         // Create players
         val playerA = Player(aName)
         val playerB = Player(bName)
         // Initialize the game state
-        val game = GameState(Table(drawPile, reserveStack, pyramid), playerA, playerB)
-        currentGame = game
+        val table = Table(reserveStack, drawPile)
+        val gameState = GameState(table, playerA, playerB)
+        this.currentGame = gameState
 
         // Call refresh method
         onAllRefreshables {
-            onGameStart(playerA.name, playerB.name, game.table.pyramid, game.table.drawPile)
+            onGameStart(playerA.name, playerB.name, pyramid, gameState.table.drawPile)
         }
     }
 

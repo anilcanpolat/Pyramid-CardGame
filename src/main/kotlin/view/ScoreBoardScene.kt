@@ -8,7 +8,6 @@ import tools.aqua.bgw.core.MenuScene
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import java.awt.Color
-import java.util.*
 
 /**
  * Constructs a menu scene for displaying the game's result.
@@ -99,7 +98,6 @@ class GameFinishedMenuScene(private val rootService: RootService) : MenuScene(48
      */
     override fun onGameFinished(playerAScore: Int, playerBScore: Int) {
         val game = rootService.currentGame
-        checkNotNull(game) { "No game running" }
         p1Score.text = game.playerA.scoreString()
         p2Score.text = game.playerB.scoreString()
         gameResult.text = game.gameResultString()

@@ -1,13 +1,6 @@
 package service.RootServiceTest
 
-import entity.Card
-import entity.GameState
-import entity.Player
-import entity.Table
-import service.AbstractRefreshingService
 import service.RootService
-import view.Refreshable
-import java.util.*
 import kotlin.test.*
 
 /**

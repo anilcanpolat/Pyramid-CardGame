@@ -19,7 +19,7 @@ class TableTest {
         }.toMutableList()
 
         //Constructing the testTables
-        public var testTable1: Table
+        var testTable1: Table
         init {
             //Pushing the cards from CardTest to testStacks
             testStack1.push(CardTest.testCard1)

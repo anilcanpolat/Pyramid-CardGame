@@ -2,7 +2,6 @@ package service.PlayerServiceTest
 
 import entity.*
 import service.*
-import view.Refreshable
 import kotlin.test.*
 import java.util.*
 
@@ -16,7 +15,6 @@ class ActionRemovePairTest {
     private lateinit var playerService: PlayerService
     private lateinit var playerA: Player
     private lateinit var playerB: Player
-    private lateinit var refreshingService: AbstractRefreshingService
 
     /**
      * Sets up a game state with players and empty card stacks before each test.
@@ -30,6 +28,7 @@ class ActionRemovePairTest {
         val table = Table(reserveStack, drawPile)
         gameState = GameState(table, playerA, playerB)
         rootService = RootService()
+        rootService.currentGame = gameState
         playerService = PlayerService(rootService)
     }
 

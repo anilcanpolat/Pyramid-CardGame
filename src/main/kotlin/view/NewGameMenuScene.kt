@@ -1,7 +1,5 @@
 package view
 
-import entity.Card
-import entity.Player
 import service.*
 import tools.aqua.bgw.core.MenuScene
 import tools.aqua.bgw.components.uicomponents.Button
@@ -9,8 +7,6 @@ import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.components.uicomponents.TextField
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
-import java.util.*
-import tools.aqua.bgw.visual.ImageVisual
 
 /**
  * Constructs a new game menu scene.
@@ -97,7 +93,7 @@ class NewGameMenuScene(private val rootService: RootService) : MenuScene(480, 72
      * Initiates the game setup process in the root service when clicked.
      * Disabled by default until both player names are entered.
      */
-    val startButton = Button(
+    private val startButton = Button(
         width = 140, height = 35,
         posX = 210, posY = 240,
         text = "Start"

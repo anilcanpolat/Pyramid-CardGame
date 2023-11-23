@@ -1,5 +1,5 @@
 package entity
-import java.lang.IllegalArgumentException
+
 import kotlin.test.*
 
 /**

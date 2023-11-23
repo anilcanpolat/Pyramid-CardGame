@@ -1,5 +1,5 @@
 package view
-import service.*
+
 import entity.*
 import java.util.Stack
 
@@ -12,7 +12,7 @@ interface Refreshable {
      * @param score The updated score of the player.
      * @param name The name of the player whose score is updated.
      */
-    fun onScoreUpdate(score: Int, name: String): Unit {}
+    fun onScoreUpdate(score: Int, name: String) {}
     /**
      * Called when a game round finishes.
      * Implementing classes should use this method to handle the end of a game, such as updating UI to show final scores.
@@ -21,7 +21,7 @@ interface Refreshable {
      * @param playerBScore Final score of player B.
      */
     fun onGameFinished(playerAScore: Int,
-                       playerBScore: Int): Unit {}
+                       playerBScore: Int) {}
     /**
      * Called at the start of a new game.
      * Implementing classes should use this method to initialize or reset components for a new game session.
@@ -36,7 +36,7 @@ interface Refreshable {
         name2: String,
         pyramid: MutableList<MutableList<Card?>>,
         drawPile: Stack<Card>
-    ): Unit {}
+    ) {}
     /**
      * Called when a pair of cards is removed from the game.
      * Implementing classes should use this method to update the game state and UI following the removal of a card pair.
@@ -53,7 +53,7 @@ interface Refreshable {
         cardB: Pair<Int,Int>?,
         reserveTop: Card?,
         nowVisible: MutableList<Pair<Int, Int>>
-    ): Unit {}
+    ) {}
     /**
      * Called when a player draws a card.
      * Implementing classes should use this method to handle the game state and UI changes resulting from a card draw.
@@ -64,7 +64,7 @@ interface Refreshable {
     fun onActionDrawCard(
         nextPlayer: Player,
         drawnCard: Card
-    ): Unit {}
+    ) {}
     /**
      * Called when a player chooses to sit out a turn.
      * Implementing classes should use this method to update the game state and UI to reflect the change in player turns.
@@ -73,6 +73,6 @@ interface Refreshable {
      */
     fun onActionSitOut(
         nextPlayer: Player
-    ): Unit {}
+    ) {}
 
 }
