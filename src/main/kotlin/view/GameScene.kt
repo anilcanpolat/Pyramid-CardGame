@@ -16,8 +16,12 @@ import service.CardImageLoader
 import tools.aqua.bgw.event.MouseEvent
 import java.util.*
 
-
-
+/**
+ * Constructs a GameScene with the given root service.
+ * Initializes the game board with the necessary UI components and sets up event handlers.
+ *
+ * @param root The root service providing necessary game logic and state management.
+ */
 class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Refreshable {
 
     fun testDrawPile(currentGame: GameState) {
@@ -57,7 +61,12 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
 
     private var useReserve = false
 
-
+    /**
+     * Initializes the pyramid layout with the given set of cards.
+     * Arranges cards in a pyramid structure and sets up their visual representation.
+     *
+     * @param pyramidCards List of cards to be arranged in the pyramid.
+     */
     private fun initializePyramid(pyramidCards: List<Card>) {
         // Constants for card size and spacing
         val cardWidth = 100
@@ -110,6 +119,12 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         }
     }
 
+    /**
+     * Converts a list of lists of cards into a single flattened list.
+     *
+     * @param listList The list of lists to be flattened.
+     * @return A single list containing all the cards.
+     */
     private fun listListToList(listList: MutableList<MutableList<Card?>>): List<Card>{
 
         val toReturn= mutableListOf<Card>()
@@ -124,6 +139,14 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         return toReturn
     }
 
+    /**
+     * Initializes a CardView for a given card.
+     * Sets up the visual representation of the card, including its front and back images.
+     *
+     * @param card The card to be visualized.
+     * @param isEdgeCard Indicates if the card is an edge card, affecting its initial visibility.
+     * @return A CardView representing the given card.
+     */
     private fun initializeCardView(card: Card, isEdgeCard: Boolean): CardView {
         val cardImageLoader = CardImageLoader()
 
@@ -146,7 +169,10 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         return cardView
     }
 
-
+    /**
+     * Handles the selection of cards by the player.
+     * Processes the selected cards, checks if they form a valid pair, and performs the necessary game actions.
+     */
     private fun handleCardSelection() {
         if (useReserve && selectedCards.size == 2) {
             // Determine which card is from the reserve and which is from the pyramid
@@ -199,8 +225,13 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         }
     }
 
-
-    // Check if the sum of two card values is valid (equal to 15)
+    /**
+     * Checks if two cards form a valid pair according to the game's rules.
+     *
+     * @param cardA The first card in the pair.
+     * @param cardB The second card in the pair.
+     * @return True if the pair is valid, false otherwise.
+     */
     private fun isValidPair(cardA: Card, cardB: Card): Boolean {
         if (cardA.value == CardValue.ACE && cardB.value == CardValue.ACE) {
             // Two Aces cannot form a pair
@@ -215,7 +246,11 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         return sum == 15
     }
 
-
+    /**
+     * Peeks at the top card from the reserve pile.
+     *
+     * @return The top card from the reserve pile, or null if the pile is empty.
+     */
     private fun peekTopCardFromReserve(): Card? {
         return if (reservePile.isNotEmpty()) {
             // Peek at the top CardView from the reserve pile without removing it
@@ -271,6 +306,14 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
 
     }
 
+    /**
+    * Updates the display of player names and scores.
+    * Highlights the current player and refreshes score labels according to the game state.
+    *
+    * @param player1Name Name of the first player.
+    * @param player2Name Name of the second player.
+    * @param currentPlayer The player whose turn is currently active.
+    */
     fun updatePlayerDisplay(player1Name: String, player2Name: String, currentPlayer: Player) {
         // Update player names and scores
         scoreLabel1.text = "$player1Name Score: ${root.currentGame?.playerA?.score}"
@@ -286,6 +329,15 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         }
     }
 
+    /**
+     * Sets up the game board at the start of the game.
+     * Initializes the card pyramid, draw pile, and other elements based on the initial game state.
+     *
+     * @param name1 Name of the first player.
+     * @param name2 Name of the second player.
+     * @param pyramid Initial card arrangement for the pyramid.
+     * @param drawPile Initial set of cards for the draw pile.
+     */
     override fun onGameStart(name1: String, name2: String, pyramid: MutableList<MutableList<Card?>>, drawPile: Stack<Card>) {
 
         val game = root.currentGame
@@ -301,6 +353,14 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         initializePyramid(listListToList(pyramid))
     }
 
+    /**
+     * Initializes a stack view with a given stack of cards.
+     * Visually represents the stack in the UI.
+     *
+     * @param stack The stack of cards to be represented.
+     * @param stackView The LabeledStackView to be initialized.
+     * @param cardImageLoader The loader to retrieve card images.
+     */
     private fun initializeStackView(stack: Stack<Card>, stackView: LabeledStackView, cardImageLoader: CardImageLoader) {
         stackView.clear()
         //stack.push(Card(CardSuit.SPADES, CardValue.FOUR))
@@ -316,6 +376,13 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         }
     }
 
+    /**
+     * Updates the score display for a player.
+     * Called when there is a change in the score during the game.
+     *
+     * @param score The new score to be displayed.
+     * @param name The name of the player whose score is updated.
+     */
     override fun onScoreUpdate(score: Int, name: String) {
         // Update the score label for the corresponding player
         if (scoreLabel1.text.contains(name)) {
@@ -325,6 +392,12 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         }
     }
 
+    /**
+     * Updates the game state when a player chooses to sit out a turn.
+     * Reflects changes in the UI to indicate the next player's turn.
+     *
+     * @param nextPlayer The player who will take the next turn.
+     */
     override fun onActionSitOut(nextPlayer: Player) {
         val game = root.currentGame ?: return // Ensure the game is not null
 
@@ -335,6 +408,13 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         updatePlayerDisplay(player1Name, player2Name, nextPlayer)
     }
 
+    /**
+     * Handles the action of drawing a card from the draw pile.
+     * Updates the game state and UI to reflect the drawn card and the next player's turn.
+     *
+     * @param nextPlayer The player who will take the next turn.
+     * @param drawnCard The card that has been drawn.
+     */
     override fun onActionDrawCard(nextPlayer: Player, drawnCard: Card) {
         val game = root.currentGame ?: return // Ensure the game is not null
 
@@ -352,6 +432,16 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         updatePlayerDisplay(player1Name, player2Name, nextPlayer)
     }
 
+    /**
+     * Handles the removal of a pair of cards from the game.
+     * Updates the game state and UI to reflect the removal of the cards and any newly visible cards.
+     *
+     * @param nextPlayer The player who will take the next turn.
+     * @param cardA Position of the first card in the pair.
+     * @param cardB Position of the second card in the pair.
+     * @param reserveTop The top card of the reserve pile, if applicable.
+     * @param nowVisible A list of positions of cards that are now visible.
+     */
     override fun onActionRemovePair(
         nextPlayer: Player,
         cardA: Pair<Int, Int>?,
@@ -386,6 +476,12 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         onScoreUpdate(game.playerB.score, player2Name)
     }
 
+    /**
+     * Removes a card from the pyramid view.
+     * Called when a card is successfully removed from the game.
+     *
+     * @param position The position of the card in the pyramid to be removed.
+     */
     private fun removeCardFromPyramidView(position: Pair<Int, Int>) {
         val (row, col) = position
         val cardView = pyramidView[row][col]
@@ -399,6 +495,12 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         pyramidView[row][col] = null
             }
 
+    /**
+     * Reveals a card at a specific position in the pyramid.
+     * Used when a card becomes visible due to the removal of other cards.
+     *
+     * @param position The position of the card in the pyramid to be revealed.
+     */
     private fun revealCardAtPosition(position: Pair<Int, Int>) {
         val (row, col) = position
         if (row in pyramidView.indices && col in pyramidView[row].indices) {
