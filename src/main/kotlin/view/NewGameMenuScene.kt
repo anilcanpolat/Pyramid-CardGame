@@ -112,9 +112,7 @@ class NewGameMenuScene(private val rootService: RootService) : MenuScene(480, 72
      * Sets up the layout, positioning, and initial properties of each component.
      */
     init {
-        //val backgroundImage = ImageVisual("background.png")
-        //this.background = backgroundImage
-
+        //background = ImageVisual("background.png")
         opacity = .5
         addComponents(
             headlineLabel,

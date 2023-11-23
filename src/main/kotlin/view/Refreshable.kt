@@ -3,6 +3,19 @@ package view
 import entity.*
 import java.util.Stack
 
+/**
+ * An interface representing a UI component or scene that can be refreshed or updated.
+ * Classes implementing this interface should define how they update their state or appearance
+ * in response to changes in the game's data or state.
+ *
+ * The Refreshable interface is typically used in game applications where multiple parts
+ * of the UI need to be updated synchronously to reflect the current game state. For example,
+ * a game board, score display, or player inventory UI could implement this interface to ensure
+ * they reflect the latest game data.
+ *
+ * Methods that should be implemented by classes implementing this interface might include
+ * updating visual elements, resetting state, or responding to game events.
+ */
 interface Refreshable {
 
     /**

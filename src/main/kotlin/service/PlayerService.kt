@@ -9,9 +9,8 @@ import java.lang.IllegalStateException
  * getting the position of a specific card, validating card pairs, removing cards from the pyramid,
  * handling card pair removal action, drawing a card from the draw stack, and allowing a player to sit out.
  */
-class PlayerService(rootService: RootService): AbstractRefreshingService() {
+class PlayerService(val rootService: RootService): AbstractRefreshingService() {
 
-    private val gameState = rootService.currentGame
     /**
      * Makes neighbouring cards visible when a card is removed from the pyramid.
      *
@@ -19,6 +18,9 @@ class PlayerService(rootService: RootService): AbstractRefreshingService() {
      * @param column the column index of the card.
      */
     private fun makeNeighboursVisible(row: Int, column: Int): MutableList<Card?> {
+
+        val gameState = rootService.currentGame
+
         val nowVisibleCards: MutableList<Card?> = mutableListOf()
 
         // Left neighbor
@@ -32,7 +34,6 @@ class PlayerService(rootService: RootService): AbstractRefreshingService() {
             gameState.table.pyramid[row][column + 1]?.visible = true
             nowVisibleCards.add(gameState.table.pyramid[row][column + 1])
         }
-
         return nowVisibleCards
     }
 
@@ -44,22 +45,28 @@ class PlayerService(rootService: RootService): AbstractRefreshingService() {
      * @return a pair of integers representing the row and column of the card if found, otherwise null.
      */
     private fun getPosOfCard(targetCard: Card): Pair<Int, Int>? {
-        var currentPosition = 0 // This will be the position in a flattened version of the pyramid
 
-        // Iterate through each row of the pyramid
-        for (row in 0 until 7) {
-            // Iterate through each card in the row
-            for (column in 0 until row + 1) {
-                // Check if the current card is the one we're looking for
-                val card = gameState.table.pyramid[row][column]
-                if (card == targetCard) {
-                    return Pair(row, column)
+        //if(rootService.currentGame.table.pyramid.forEach{it -> it.contains(targetCard)})  {
+
+            val gameState = rootService.currentGame
+
+            var currentPosition = 0 // This will be the position in a flattened version of the pyramid
+
+            // Iterate through each row of the pyramid
+            for (row in 0 until 7) {
+                // Iterate through each card in the row
+                for (column in 0 until row + 1) {
+                    // Check if the current card is the one we're looking for
+                    val card = gameState.table.pyramid[row][column]
+                    if (card == targetCard) {
+                        return Pair(row, column)
+                    }
+                    // Increment the currentPosition for the next card
+                    currentPosition++
                 }
-                // Increment the currentPosition for the next card
-                currentPosition++
             }
-        }
-        // If the card is not found, return null
+            // If the card is not found, return null
+        //}
         return null
     }
 
@@ -92,6 +99,8 @@ class PlayerService(rootService: RootService): AbstractRefreshingService() {
      */
     private fun removeFromPyramid(card: Card): MutableList<Card?> {
 
+        val gameState = rootService.currentGame
+
         //Checks if the position is not null, as it is nullable*/
         val cardPosition = getPosOfCard(card)
         if (cardPosition != null) {
@@ -115,6 +124,8 @@ class PlayerService(rootService: RootService): AbstractRefreshingService() {
         cardB: Card,
         useReserve: Boolean
     ) {
+        val gameState = rootService.currentGame
+
         var reserveTop: Card? = null
         if(!gameState.table.reserveStack.empty()) reserveTop = gameState.table.reserveStack.last()
 
@@ -129,12 +140,12 @@ class PlayerService(rootService: RootService): AbstractRefreshingService() {
                 //CardA is on the reserveStack
                 if (getPosOfCard(cardA) == null && getPosOfCard(cardB) != null) {
                     nowVisibleCards = removeFromPyramid(cardB)
-                    nowVisibleCards.add(gameState.table.reserveStack.pop())  //Sets the Card on the ReserveStack null
+                    gameState.table.reserveStack.pop()  //Sets the Card on the ReserveStack null
                 }
                 //CardB is on the reserveStack
                 else if (getPosOfCard(cardA) != null && getPosOfCard(cardB) == null) {
                     nowVisibleCards = removeFromPyramid(cardA)
-                    nowVisibleCards.add(gameState.table.reserveStack.pop())  //Sets the Card on the ReserveStack null
+                    gameState.table.reserveStack.pop()  //Sets the Card on the ReserveStack null
                 } else {
                     throw IllegalStateException("There isn't any Card to remove in the pyramid")
                 }
@@ -178,6 +189,8 @@ class PlayerService(rootService: RootService): AbstractRefreshingService() {
      * Draws a card from the draw stack, makes it visible, and adds it to the reserve stack.
      */
     fun actionDrawCard() {
+        val gameState = rootService.currentGame
+
         //Check if there are cards remaining in the draw pile
         if (gameState.table.drawPile.isEmpty()) {
             //No cards left in the draw pile
@@ -197,6 +210,8 @@ class PlayerService(rootService: RootService): AbstractRefreshingService() {
      * Increments the sit out count and passes the turn to the next player.
      */
     fun actionSitOut() {
+        val gameState = rootService.currentGame
+
         gameState.switchCurrentPlayer()
         gameState.sitOutCount++
 

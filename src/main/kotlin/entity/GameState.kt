@@ -2,8 +2,14 @@ package entity
 import kotlin.random.Random
 
 /**
- * Data class defines the values table, PlayerA, PlayerB
- * and variable currentPlayer as it changes periodically
+ * Represents the state of a game, including the game table, the two players, and the current player.
+ *
+ * This class is central to managing the state and progress of the game. It tracks which player's turn it is,
+ * and how many consecutive times players have chosen to pass their turn (tracked by `sitOutCount`).
+ *
+ * @property table The game table, encapsulating elements like the card pyramid and decks.
+ * @property playerA The first player in the game.
+ * @property playerB The second player in the game.
  */
 data class GameState(
     val table: Table,
@@ -18,6 +24,10 @@ data class GameState(
         require(sitOutCount < 3 && sitOutCount >= 0) { "Value must be between 0 and 2 (inclusive)" }
     }
 
+    /**
+     * Switches the turn to the other player.
+     * This method is called to alternate turns between playerA and playerB.
+     */
     fun switchCurrentPlayer() {
         currentPlayer = if (currentPlayer == playerA) playerB else playerA
     }

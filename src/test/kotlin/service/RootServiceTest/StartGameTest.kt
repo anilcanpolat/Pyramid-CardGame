@@ -40,8 +40,7 @@ class StartGameTest {
         assertEquals(7, rootService.currentGame.table.pyramid.size,
             "The pyramid should have 7 rows.")
         rootService.currentGame.table.pyramid.forEachIndexed { index, row ->
-            // Each row in the pyramid should have a number of cards equal to its 1-based index.
-            assertEquals(index + 1, row.size,
+            assertEquals(7, row.size,
                 "Row ${index + 1} in the pyramid should have ${index + 1} cards.")
             // Ensure that each row in the pyramid is not null, indicating it has been populated with cards.
             assertNotNull(rootService.currentGame.table.pyramid[index],

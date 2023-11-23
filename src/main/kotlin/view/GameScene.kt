@@ -24,17 +24,16 @@ import java.util.*
  */
 class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Refreshable {
 
-    private fun testDrawPile(currentGame: GameState) {
-        val testCard = Card(CardSuit.SPADES, CardValue.FOUR)
-        val cardView = initializeCardView(testCard, true)
-        currentGame.table.drawPile.push(testCard)
-        cardMap.add(testCard, cardView)
-        addComponents(cardView)
-    }
+    //private fun Table.pyramid(): String = "${this.drawCards.size}"
+    private val pyramidView: MutableList<MutableList<CardView?>> = mutableListOf()
 
-    private val drawPile = LabeledStackView(posX = 1600, posY = 750,"Draw Pile").apply { this.
-        onMouseClicked ={root.playerService.actionDrawCard()
+    private val selectedCards: MutableList<CardView> = mutableListOf()
 
+    private var useReserve = false
+
+    private val drawPile = LabeledStackView(posX = 1600, posY = 750,"Draw Pile").apply {
+        onMouseClicked ={
+            root.playerService.actionDrawCard()
         }
     }
 
@@ -53,12 +52,42 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
             }
         }
     }
-    //private fun Table.pyramid(): String = "${this.drawCards.size}"
-    private val pyramidView: MutableList<MutableList<CardView?>> = mutableListOf()
 
-    private val selectedCards: MutableList<CardView> = mutableListOf()
+    private val scoreLabel1 = Label(width = 300, height = 30, posX = 100, posY = 40,
+        font = Font(size = 24,fontWeight = Font.FontWeight.BOLD)
+    ).apply {
+        text = "${root.currentGame.playerA.name}: ${root.currentGame.playerA.score}"
+    }
 
-    private var useReserve = false
+    private val scoreLabel2 = Label(width = 300, height = 30, posX = 1500, posY = 40,
+        font = Font(size = 24,fontWeight = Font.FontWeight.BOLD)
+    ).apply {
+        text = "${root.currentGame.playerB.name}: ${root.currentGame.playerB.score}"
+    }
+
+
+    /**
+     * Initializes a stack view with a given stack of cards.
+     * Visually represents the stack in the UI.
+     *
+     * @param stack The stack of cards to be represented.
+     * @param stackView The LabeledStackView to be initialized.
+     * @param cardImageLoader The loader to retrieve card images.
+     */
+    private fun initializeStackView(stack: Stack<Card>, stackView: LabeledStackView, cardImageLoader: CardImageLoader) {
+        stackView.clear()
+        //stack.push(Card(CardSuit.SPADES, CardValue.FOUR))
+        stack.forEach { card ->
+            val cardView = CardView(
+                height = 200,
+                width = 130,
+                front = ImageVisual(cardImageLoader.frontImageFor(card.suit, card.value)),
+                back = ImageVisual(cardImageLoader.backImage)
+            )
+            stackView.add(cardView)
+            cardMap.add(card, cardView)
+        }
+    }
 
     /**
      * Initializes the pyramid layout with the given set of cards.
@@ -105,10 +134,11 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
 
                     // Click event for each card
                     cardView.onMouseClicked = {
-                        if (!selectedCards.contains(cardView) && selectedCards.size < 2) {
-                            selectedCards.add(cardView)
-                            if (selectedCards.size == 2) {
-                                handleCardSelection()
+                        if (cardView.currentSide == CardView.CardSide.FRONT &&!selectedCards.contains(cardView)
+                            && selectedCards.size < 2) {
+                                selectedCards.add(cardView)
+                                if (selectedCards.size == 2) {
+                                    handleCardSelection()
                             }
                         }
                     }
@@ -132,7 +162,6 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
                     toReturn.add(it)
                 }
             }
-
         }
         return toReturn
     }
@@ -267,18 +296,6 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         }
     }
 
-    private val scoreLabel1 = Label(width = 300, height = 30, posX = 100, posY = 40,
-        font = Font(size = 24,fontWeight = Font.FontWeight.BOLD)
-    ).apply {
-        text = "${root.currentGame.playerA.name}: ${root.currentGame.playerA.score}"
-    }
-
-    private val scoreLabel2 = Label(width = 300, height = 30, posX = 1500, posY = 40,
-        font = Font(size = 24,fontWeight = Font.FontWeight.BOLD)
-    ).apply {
-        text = "${root.currentGame.playerB.name}: ${root.currentGame.playerB.score}"
-    }
-
     /**
      * structure to hold pairs of (card, cardView) that can be used
      *
@@ -290,7 +307,8 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
     private val cardMap: BidirectionalMap<Card, CardView> = BidirectionalMap()
 
     init {
-        background = ColorVisual(244, 164, 96)
+
+        //background = ImageVisual("desert.png")
         addComponents(
             drawPile, reservePile,
             scoreLabel1,scoreLabel2,
@@ -338,33 +356,9 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         val cardImageLoader = CardImageLoader()
 
         updatePlayerDisplay(name1, name2, game.currentPlayer)
-        testDrawPile(game)
         initializeStackView(drawPile, this.drawPile, cardImageLoader)
 
         initializePyramid(listListToList(pyramid))
-    }
-
-    /**
-     * Initializes a stack view with a given stack of cards.
-     * Visually represents the stack in the UI.
-     *
-     * @param stack The stack of cards to be represented.
-     * @param stackView The LabeledStackView to be initialized.
-     * @param cardImageLoader The loader to retrieve card images.
-     */
-    private fun initializeStackView(stack: Stack<Card>, stackView: LabeledStackView, cardImageLoader: CardImageLoader) {
-        stackView.clear()
-        //stack.push(Card(CardSuit.SPADES, CardValue.FOUR))
-        stack.forEach { card ->
-            val cardView = CardView(
-                height = 200,
-                width = 130,
-                front = ImageVisual(cardImageLoader.frontImageFor(card.suit, card.value)),
-                back = ImageVisual(cardImageLoader.backImage)
-            )
-            stackView.add(cardView)
-            cardMap.add(card, cardView)
-        }
     }
 
     /**
@@ -459,12 +453,13 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         val player1Name = game.playerA.name
         val player2Name = game.playerB.name
 
-        // Update player scores and turn indicators
-        updatePlayerDisplay(player1Name, player2Name, nextPlayer)
-
         // Optionally, you can also update the scores here if they are not automatically updated elsewhere
         onScoreUpdate(game.playerA.score, player1Name)
         onScoreUpdate(game.playerB.score, player2Name)
+
+        // Update player scores and turn indicators
+        //updatePlayerDisplay(player1Name, player2Name, nextPlayer)
+
     }
 
     /**
@@ -484,7 +479,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
 
         // Set the corresponding position in pyramidLayout to null
         pyramidView[row][col] = null
-            }
+    }
 
     /**
      * Reveals a card at a specific position in the pyramid.
