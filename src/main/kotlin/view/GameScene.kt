@@ -65,7 +65,6 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         text = "${root.currentGame.playerB.name}: ${root.currentGame.playerB.score}"
     }
 
-
     /**
      * Initializes a stack view with a given stack of cards.
      * Visually represents the stack in the UI.
@@ -308,7 +307,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
 
     init {
 
-        //background = ImageVisual("desert.png")
+        background = ImageVisual("desert.png")
         addComponents(
             drawPile, reservePile,
             scoreLabel1,scoreLabel2,

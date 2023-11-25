@@ -6,7 +6,7 @@ import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.components.uicomponents.TextField
 import tools.aqua.bgw.util.Font
-import tools.aqua.bgw.visual.ColorVisual
+import tools.aqua.bgw.visual.ImageVisual
 
 /**
  * Constructs a new game menu scene.
@@ -14,7 +14,7 @@ import tools.aqua.bgw.visual.ColorVisual
  *
  * @param rootService The root service to manage game logic and state transitions.
  */
-class NewGameMenuScene(private val rootService: RootService) : MenuScene(480, 720 ), Refreshable {
+class NewGameMenuScene(private val rootService: RootService) : MenuScene(720, 480 ), Refreshable {
 
     /**
      * A label displaying the headline "Start New Game".
@@ -22,7 +22,7 @@ class NewGameMenuScene(private val rootService: RootService) : MenuScene(480, 72
      */
     private val headlineLabel = Label(
         width = 300, height = 50, posX = 80, posY = 50,
-        text = "Start New Game",
+        text = "Pyramid",
         font = Font(size = 22)
     )
 
@@ -81,11 +81,11 @@ class NewGameMenuScene(private val rootService: RootService) : MenuScene(480, 72
      * Styled with a distinct visual to indicate its purpose.
      */
     val quitButton = Button(
-        width = 140, height = 35,
+        width = 140, height = 45,
         posX = 50, posY = 240,
-        text = "Quit"
+
     ).apply {
-        visual = ColorVisual(221, 136, 136)
+        visual = ImageVisual("endgame.png")
     }
 
     /**
@@ -94,11 +94,10 @@ class NewGameMenuScene(private val rootService: RootService) : MenuScene(480, 72
      * Disabled by default until both player names are entered.
      */
     private val startButton = Button(
-        width = 140, height = 35,
+        width = 140, height = 45,
         posX = 210, posY = 240,
-        text = "Start"
     ).apply {
-        visual = ColorVisual(136, 221, 136)
+        visual = ImageVisual("startgame.png")
         onMouseClicked = {
             rootService.startGame(
                 p1Input.text.trim(),
@@ -107,18 +106,23 @@ class NewGameMenuScene(private val rootService: RootService) : MenuScene(480, 72
         }
     }
 
+    private val whatIsThis = Label(
+        width = 15, height = 15, posX = 192, posY = 255,
+        visual = ImageVisual("whatisthis.png")
+    )
+
     /**
      * Initializes the scene with the defined UI components.
      * Sets up the layout, positioning, and initial properties of each component.
      */
     init {
-        //background = ImageVisual("background.png")
-        opacity = .5
+        background = ImageVisual("background.png")
         addComponents(
             headlineLabel,
             p1Label, p1Input,
             p2Label, p2Input,
-            startButton, quitButton
+            startButton, quitButton,
+            whatIsThis
         )
     }
 }

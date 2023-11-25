@@ -89,7 +89,6 @@ class RootService: AbstractRefreshingService()  {
         }
     }
 
-
     /**
      * Entry point for starting the game with player names.
      * Invokes the startGame method and checks if the game is finished after setup.
@@ -98,7 +97,6 @@ class RootService: AbstractRefreshingService()  {
      */
     fun rootService(player1Name: String, player2Name: String) {
         startGame(player1Name, player2Name)
-        gameFinished()
     }
 
      /**
@@ -111,8 +109,6 @@ class RootService: AbstractRefreshingService()  {
                 currentGame.table.pyramid.all { row ->
                     row.all { it == null }
                 }
-        onAllRefreshables {
-        onGameFinished(currentGame.playerA.score, currentGame.playerB.score) }
         return status
     }
 }

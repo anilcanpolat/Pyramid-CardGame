@@ -37,7 +37,6 @@ class PlayerService(val rootService: RootService): AbstractRefreshingService() {
         return nowVisibleCards
     }
 
-
     /**
      * Retrieves the position of the specified card in the pyramid.
      *
@@ -175,7 +174,7 @@ class PlayerService(val rootService: RootService): AbstractRefreshingService() {
             val nonNullableNowVisiblePositions = nowVisiblePositions.filterNotNull().toMutableList()
 
             onAllRefreshables {
-                if (posA != null && posB != null) {
+                if (posA != null || posB != null) {
                     onActionRemovePair(
                         gameState.currentPlayer,
                         posA, posB, reserveTop,
@@ -210,11 +209,14 @@ class PlayerService(val rootService: RootService): AbstractRefreshingService() {
      * Increments the sit out count and passes the turn to the next player.
      */
     fun actionSitOut() {
+
         val gameState = rootService.currentGame
-
-        gameState.switchCurrentPlayer()
-        gameState.sitOutCount++
-
-        onAllRefreshables { onActionSitOut(gameState.currentPlayer) }
+        checkNotNull(gameState) { "No game currently running."}
+        if(!rootService.gameFinished()) {
+            gameState.switchCurrentPlayer()
+            gameState.sitOutCount++
+            if(rootService.gameFinished()) onAllRefreshables { onGameFinished(gameState.playerA.score, gameState.playerB.score) }
+            onAllRefreshables { onActionSitOut(gameState.currentPlayer) }
+        }
     }
 }

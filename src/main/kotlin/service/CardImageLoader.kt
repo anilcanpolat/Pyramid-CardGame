@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
 private const val CARDS_FILE = "/card_deck.png"
-private const val BACKGROUND_FILE = "/background.jpg"
 private const val IMG_HEIGHT = 200
 private const val IMG_WIDTH = 130
 
