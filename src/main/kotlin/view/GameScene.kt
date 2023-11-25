@@ -353,7 +353,7 @@ class GameScene(private val root: RootService) : BoardGameScene (1920,1080), Ref
         cardMap.clear()
 
         val cardImageLoader = CardImageLoader()
-
+        reservePile.clear()
         updatePlayerDisplay(name1, name2, game.currentPlayer)
         initializeStackView(drawPile, this.drawPile, cardImageLoader)
 
