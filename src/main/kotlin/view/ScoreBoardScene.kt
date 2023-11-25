@@ -15,7 +15,7 @@ import java.awt.Color
  *
  * @param rootService The root service for accessing game data and controlling game flow.
  */
-class GameFinishedMenuScene(private val rootService: RootService) : MenuScene(480, 776), Refreshable {
+class ScoreBoardScene(private val rootService: RootService) : MenuScene(480, 776), Refreshable {
 
     /**
      * Label component configuration. The label is set to cover the entire scene's width and height.

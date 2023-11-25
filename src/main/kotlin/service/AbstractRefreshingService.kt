@@ -1,6 +1,6 @@
 package service
 
-import view.GameFinishedMenuScene
+import view.ScoreBoardScene
 import view.GameScene
 import view.NewGameMenuScene
 import view.Refreshable
@@ -31,7 +31,7 @@ abstract class AbstractRefreshingService {
     open fun addRefreshable(
         newRefreshable: Refreshable,
         gameScene: GameScene,
-        gameFinishedMenuScene: GameFinishedMenuScene,
+        gameFinishedMenuScene: ScoreBoardScene,
         newGameMenuScene: NewGameMenuScene
     ) {
         refreshables += newRefreshable

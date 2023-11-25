@@ -28,7 +28,7 @@ class PyramidApplication : BoardGameApplication("Pyramid"), Refreshable {
      * Allows players to start a new game or quit the application.
      */
 
-    private val scoreBoardScene = GameFinishedMenuScene(rootService).apply {
+    private val scoreBoardScene = ScoreBoardScene(rootService).apply {
         newGameButton.onMouseClicked = {
             this@PyramidApplication.showMenuScene(newGameMenuScene)
         }
