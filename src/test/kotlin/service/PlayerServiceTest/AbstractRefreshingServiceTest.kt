@@ -27,6 +27,17 @@ class AbstractRefreshingServiceTest {
     private lateinit var gameFinishedMenuScene: ScoreBoardScene
     private lateinit var newGameMenuScene: NewGameMenuScene
 
+    /**
+     * A stub implementation of the Refreshable interface for testing purposes.
+     *
+     * This class provides a simple implementation of the Refreshable interface methods
+     * where each method call sets a flag indicating that a refresh operation has occurred.
+     * This is particularly useful in testing scenarios to verify if the methods of the
+     * Refreshable interface are being called as expected.
+     *
+     * The 'wasRefreshed' flag can be checked in tests to assert that the refresh operation
+     * was performed.
+     */
     class RefreshableStub : Refreshable {
         var wasRefreshed = false
 

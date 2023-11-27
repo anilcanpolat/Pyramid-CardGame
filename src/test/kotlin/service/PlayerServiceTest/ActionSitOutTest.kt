@@ -31,6 +31,23 @@ class ActionSitOutTest {
         gameState = GameState(table, playerA, playerB)
         rootService = RootService()
         playerService = PlayerService(rootService)
+        val cardA = Card(CardSuit.HEARTS, CardValue.SEVEN)
+        val cardB = Card(CardSuit.CLUBS, CardValue.EIGHT)
+        val cardC = Card(CardSuit.DIAMONDS, CardValue.FIVE)
+        val cardD = Card(CardSuit.SPADES, CardValue.ACE)
+        val cardE = Card(CardSuit.DIAMONDS, CardValue.FOUR)
+        val cardF = Card(CardSuit.SPADES, CardValue.JACK)
+        val cardG = Card(CardSuit.DIAMONDS, CardValue.FOUR)
+        val cardH = Card(CardSuit.SPADES, CardValue.JACK)
+
+        gameState.table.pyramid[0][0] = cardA
+        gameState.table.pyramid[2][0] = cardB
+        gameState.table.pyramid[3][2] = cardC
+        gameState.table.pyramid[4][2] = cardD
+        gameState.table.pyramid[5][1] = cardE
+        gameState.table.pyramid[5][2] = cardF
+        gameState.table.pyramid[6][6] = cardG
+        gameState.table.pyramid[6][0] = cardH
         rootService.currentGame = gameState
     }
 
@@ -43,14 +60,23 @@ class ActionSitOutTest {
         // Ensure the sitOutCount is 0 at the beginning of the test.
         assertEquals(0, rootService.currentGame.sitOutCount, "Initially, sitOutCount should be 0.")
     }
-    /*
+
+    /**
+     * Tests the actionSitOut method in PlayerService to ensure it correctly increments the sitOutCount.
+     *
+     * This test verifies that when a player chooses to sit out a turn, the sitOutCount in the
+     * current game state is incremented appropriately. The test initially checks that the sitOutCount
+     * is zero, then calls the actionSitOut method and asserts that the sitOutCount has been
+     * incremented to 1. This ensures that the game state is correctly tracking the number of
+     * consecutive sit outs, which may be critical for game rules and turn management.
+     */
     @Test
     fun testActionSitOutIncrement() {
         // Ensure the sitOutCount is 0 at the beginning of the test.
         assertEquals(0,  rootService.currentGame.sitOutCount, "Initially, sitOutCount should be 0.")
         playerService.actionSitOut()
         assertEquals(1,  rootService.currentGame.sitOutCount, "SitOutCount should increment to 1.")
-    }*/
+    }
 
     /**
      * Tests the actionSitOut method in scenarios where the game finishes as a result of the sit out action.
