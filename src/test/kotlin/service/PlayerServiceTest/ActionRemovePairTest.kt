@@ -100,7 +100,6 @@ class ActionRemovePairTest {
         gameState.table.pyramid[0][0] = cardA
         gameState.table.pyramid[1][0] = cardB
 
-
         assertEquals(0, gameState.currentPlayer.score) // score increases by 1 for an Ace
 
         // Action
@@ -204,8 +203,6 @@ class ActionRemovePairTest {
 
         assertTrue(gameState.table.reserveStack.isEmpty())
         assertNull(gameState.table.pyramid[0][0])
-        //Requires Refreshables
-        //assertEquals(initialScore+2, gameState.currentPlayer.score)
     }
 
     /**

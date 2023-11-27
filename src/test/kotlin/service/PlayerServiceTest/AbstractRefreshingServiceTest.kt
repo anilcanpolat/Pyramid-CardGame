@@ -28,6 +28,53 @@ class AbstractRefreshingServiceTest {
     private lateinit var newGameMenuScene: NewGameMenuScene
 
     class RefreshableStub : Refreshable {
+        var wasRefreshed = false
+
+        // Additional method for testing purposes
+        fun markAsRefreshed() {
+            wasRefreshed = true
+        }
+
+        // Implementations of Refreshable interface methods
+        override fun onScoreUpdate(score: Int, name: String) {
+            markAsRefreshed()
+        }
+
+        override fun onGameFinished(playerAScore: Int, playerBScore: Int) {
+            markAsRefreshed()
+        }
+
+        override fun onGameStart(
+            name1: String,
+            name2: String,
+            pyramid: MutableList<MutableList<Card?>>,
+            drawPile: Stack<Card>
+        ) {
+            markAsRefreshed()
+        }
+
+        override fun onActionRemovePair(
+            nextPlayer: Player,
+            cardA: Pair<Int,Int>?,
+            cardB: Pair<Int,Int>?,
+            reserveTop: Card?,
+            nowVisible: MutableList<Pair<Int, Int>>
+        ) {
+            markAsRefreshed()
+        }
+
+        override fun onActionDrawCard(
+            nextPlayer: Player,
+            drawnCard: Card
+        ) {
+            markAsRefreshed()
+        }
+
+        override fun onActionSitOut(
+            nextPlayer: Player
+        ) {
+            markAsRefreshed()
+        }
     }
 
     /**
@@ -67,4 +114,33 @@ class AbstractRefreshingServiceTest {
         // You may need to change the visibility of the list for testing, or use reflection.
         assertTrue(refreshingService.refreshables.contains(refreshable)) // Hypothetical method for testing
     }
+
+    /**
+     * Tests the onAllRefreshables method of AbstractRefreshingService.
+     *
+     * Verifies that a lambda function passed to onAllRefreshables is applied to all
+     * registered Refreshable objects. This ensures that all UI components can be
+     * collectively updated in response to a game state change.
+     */
+    @Test
+    fun onAllRefreshablesTest() {
+        // Create instances of RefreshableStub and add them to the refreshingService
+        val refreshable1 = RefreshableStub()
+        val refreshable2 = RefreshableStub()
+        val refreshable3 = RefreshableStub()
+
+        refreshingService.addRefreshable(refreshable1, gameScene, gameFinishedMenuScene, newGameMenuScene)
+        refreshingService.addRefreshable(refreshable2, gameScene, gameFinishedMenuScene, newGameMenuScene)
+        refreshingService.addRefreshable(refreshable3, gameScene, gameFinishedMenuScene, newGameMenuScene)
+
+        // Apply a lambda function to all registered refreshables
+        refreshingService.onAllRefreshables { onActionSitOut(Player("")) }
+        refreshingService.onAllRefreshables { onScoreUpdate(5, "") }
+
+        // Verify that the lambda function was applied to each refreshable instance
+        assertTrue(refreshable1.wasRefreshed)
+        assertTrue(refreshable2.wasRefreshed)
+        assertTrue(refreshable3.wasRefreshed)
+    }
+
 }
