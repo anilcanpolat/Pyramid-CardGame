@@ -194,13 +194,31 @@ class ActionRemovePairTest {
      * Tests that a valid pair is removed when one card is from the reserve stack.
      */
     @Test
-    fun testValidPairRemovalWithOneCardFromReserve() {
+    fun testValidPairRemovalWithCardAFromReserve() {
         // Setup the reserve with a card and ensure the pyramid has a matching card
         val cardA = Card(CardSuit.HEARTS, CardValue.SEVEN)
         gameState.table.reserveStack.push(cardA) // Card from reserve
         val cardB = Card(CardSuit.CLUBS, CardValue.EIGHT)
         gameState.table.pyramid[0][0] = cardB // Card from pyramid
         playerService.actionRemovePair(cardA, cardB, true)
+
+        assertTrue(gameState.table.reserveStack.isEmpty())
+        assertNull(gameState.table.pyramid[0][0])
+        //Requires Refreshables
+        //assertEquals(initialScore+2, gameState.currentPlayer.score)
+    }
+
+    /**
+     * Tests that a valid pair is removed when the other card is from the reserve stack.
+     */
+    @Test
+    fun testValidPairRemovalWithCardBFromReserve() {
+        // Setup the reserve with a card and ensure the pyramid has a matching card
+        val cardA = Card(CardSuit.HEARTS, CardValue.SEVEN)
+        gameState.table.reserveStack.push(cardA) // Card from reserve
+        val cardB = Card(CardSuit.CLUBS, CardValue.EIGHT)
+        gameState.table.pyramid[0][0] = cardB // Card from pyramid
+        playerService.actionRemovePair(cardB, cardA, true)
 
         assertTrue(gameState.table.reserveStack.isEmpty())
         assertNull(gameState.table.pyramid[0][0])
