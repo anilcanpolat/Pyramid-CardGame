@@ -27,7 +27,6 @@ class AbstractRefreshingServiceTest {
     private lateinit var gameFinishedMenuScene: ScoreBoardScene
     private lateinit var newGameMenuScene: NewGameMenuScene
 
-
     class RefreshableStub : Refreshable {
     }
 

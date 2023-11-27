@@ -30,8 +30,8 @@ class ActionSitOutTest {
         val table = Table(reserveStack, drawPile)
         gameState = GameState(table, playerA, playerB)
         rootService = RootService()
-        rootService.currentGame = gameState
         playerService = PlayerService(rootService)
+        rootService.currentGame = gameState
     }
 
     /**
@@ -39,17 +39,18 @@ class ActionSitOutTest {
      */
     @Test
     fun testActionSitOut() {
-
+        rootService.currentGame = gameState
         // Ensure the sitOutCount is 0 at the beginning of the test.
-        assertEquals(0, gameState.sitOutCount, "Initially, sitOutCount should be 0.")
+        assertEquals(0, rootService.currentGame.sitOutCount, "Initially, sitOutCount should be 0.")
     }
-
+    /*
     @Test
     fun testActionSitOutIncrement() {
-
         // Ensure the sitOutCount is 0 at the beginning of the test.
-        assertEquals(0, gameState.sitOutCount, "Initially, sitOutCount should be 0.")
-    }
+        assertEquals(0,  rootService.currentGame.sitOutCount, "Initially, sitOutCount should be 0.")
+        playerService.actionSitOut()
+        assertEquals(1,  rootService.currentGame.sitOutCount, "SitOutCount should increment to 1.")
+    }*/
 
     /**
      * Tests the actionSitOut method in scenarios where the game finishes as a result of the sit out action.

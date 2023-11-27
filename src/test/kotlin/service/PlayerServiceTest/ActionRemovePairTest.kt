@@ -170,6 +170,8 @@ class ActionRemovePairTest {
         gameState.table.pyramid[6][6] = cardG
         gameState.table.pyramid[6][0] = cardH
 
+        rootService.currentGame = gameState
+
         playerService.actionRemovePair(cardA, cardB, false)
         playerService.actionRemovePair(cardC, cardD, false)
         playerService.actionRemovePair(cardE, cardF, false)
