@@ -1,7 +1,9 @@
 package service.RootServiceTest
 
 import service.RootService
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.Test
+import kotlin.test.BeforeTest
 
 /**
  * Test suite for testing the RootService class which is responsible for starting a new game.
@@ -9,6 +11,7 @@ import kotlin.test.*
 class RootServiceTest {
 
     private lateinit var rootService: RootService
+
     /**
      * Prepares the testing environment by creating an instance of RootService before each test.
      */
@@ -31,4 +34,5 @@ class RootServiceTest {
         assertEquals("Morty Smith", rootService.currentGame.playerB.name,
             "The name of playerB should match the name provided at the start of the game.")
     }
+
 }

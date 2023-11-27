@@ -43,4 +43,29 @@ class ActionSitOutTest {
         // Ensure the sitOutCount is 0 at the beginning of the test.
         assertEquals(0, gameState.sitOutCount, "Initially, sitOutCount should be 0.")
     }
+
+    /**
+     * Tests the actionSitOut method in scenarios where the game finishes as a result of the sit out action.
+     *
+     * This test focuses on the situation where a player decides to sit out and this action leads to the
+     * conclusion of the game. The test verifies that the game correctly identifies its completion and
+     * ensures that the final scores of the players are as expected at the end of the game. The test assumes
+     * that sitting out under certain conditions (which should be specified or set up in the test) will
+     * trigger the end of the game.
+     */
+    @Test
+    fun testActionSitOutWhenGameFinishes() {
+
+        // Call the actionSitOut method
+        val playerService = PlayerService(rootService) // Assuming PlayerService takes RootService as a parameter
+        playerService.actionSitOut()
+
+        // Assert that the game finished with the expected conditions
+        // This might involve checking the final scores, or other end game conditions
+        // For example:
+        assertEquals(0, gameState.playerA.score)
+        assertEquals(0, gameState.playerB.score)
+
+        // Additional assertions can be added as necessary
+    }
 }

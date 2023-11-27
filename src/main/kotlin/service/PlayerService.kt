@@ -45,8 +45,6 @@ class PlayerService(val rootService: RootService): AbstractRefreshingService() {
      */
     private fun getPosOfCard(targetCard: Card): Pair<Int, Int>? {
 
-        //if(rootService.currentGame.table.pyramid.forEach{it -> it.contains(targetCard)})  {
-
             val gameState = rootService.currentGame
 
             var currentPosition = 0 // This will be the position in a flattened version of the pyramid
@@ -65,7 +63,6 @@ class PlayerService(val rootService: RootService): AbstractRefreshingService() {
                 }
             }
             // If the card is not found, return null
-        //}
         return null
     }
 
@@ -155,15 +152,15 @@ class PlayerService(val rootService: RootService): AbstractRefreshingService() {
             if (indicator == 1) gameState.currentPlayer.score++
             if (indicator == 2) gameState.currentPlayer.score += 2
 
+            gameState.sitOutCount = 0
+            gameState.switchCurrentPlayer()
+
             onAllRefreshables {
                 onScoreUpdate(
                     gameState.currentPlayer.score,
                     gameState.currentPlayer.name
                 )
             }
-
-            gameState.sitOutCount = 0
-            gameState.switchCurrentPlayer()
 
             val nowVisiblePositions: MutableList<Pair<Int, Int>?> = mutableListOf()
             for (card in nowVisibleCards) {

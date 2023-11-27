@@ -7,6 +7,7 @@ import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.MenuScene
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
+import tools.aqua.bgw.visual.ImageVisual
 import java.awt.Color
 
 /**
@@ -15,7 +16,7 @@ import java.awt.Color
  *
  * @param rootService The root service for accessing game data and controlling game flow.
  */
-class ScoreBoardScene(private val rootService: RootService) : MenuScene(480, 776), Refreshable {
+class ScoreBoardScene(private val rootService: RootService) : MenuScene(720, 480), Refreshable {
 
     /**
      * Label component configuration. The label is set to cover the entire scene's width and height.
@@ -64,6 +65,8 @@ class ScoreBoardScene(private val rootService: RootService) : MenuScene(480, 776
      */
     init {
         opacity = .5
+        background = ImageVisual("background.png")
+
         addComponents(headlineLabel, p1Score, p2Score, gameResult, newGameButton, quitButton)
     }
 
