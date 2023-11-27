@@ -17,7 +17,7 @@ import view.Refreshable
 abstract class AbstractRefreshingService {
 
     // Holds a list of all refreshable UI components.
-    private val refreshables = mutableListOf<Refreshable>()
+    val refreshables = mutableListOf<Refreshable>()
     /**
      * Adds a [Refreshable] object to the service's list of refreshables.
      * Once added, these objects can be collectively updated through the 'onAllRefreshables' method.

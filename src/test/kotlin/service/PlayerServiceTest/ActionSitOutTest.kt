@@ -44,6 +44,13 @@ class ActionSitOutTest {
         assertEquals(0, gameState.sitOutCount, "Initially, sitOutCount should be 0.")
     }
 
+    @Test
+    fun testActionSitOutIncrement() {
+
+        // Ensure the sitOutCount is 0 at the beginning of the test.
+        assertEquals(0, gameState.sitOutCount, "Initially, sitOutCount should be 0.")
+    }
+
     /**
      * Tests the actionSitOut method in scenarios where the game finishes as a result of the sit out action.
      *

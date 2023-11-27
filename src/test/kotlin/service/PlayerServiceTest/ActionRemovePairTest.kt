@@ -158,6 +158,8 @@ class ActionRemovePairTest {
         val cardD = Card(CardSuit.SPADES, CardValue.ACE)
         val cardE = Card(CardSuit.DIAMONDS, CardValue.FOUR)
         val cardF = Card(CardSuit.SPADES, CardValue.JACK)
+        val cardG = Card(CardSuit.DIAMONDS, CardValue.FOUR)
+        val cardH = Card(CardSuit.SPADES, CardValue.JACK)
 
         gameState.table.pyramid[0][0] = cardA
         gameState.table.pyramid[2][0] = cardB
@@ -165,10 +167,13 @@ class ActionRemovePairTest {
         gameState.table.pyramid[4][2] = cardD
         gameState.table.pyramid[5][1] = cardE
         gameState.table.pyramid[5][2] = cardF
+        gameState.table.pyramid[6][6] = cardG
+        gameState.table.pyramid[6][0] = cardH
 
         playerService.actionRemovePair(cardA, cardB, false)
         playerService.actionRemovePair(cardC, cardD, false)
         playerService.actionRemovePair(cardE, cardF, false)
+        playerService.actionRemovePair(cardG, cardH, false)
 
         gameState.table.pyramid[2][1]?.let { assertTrue(it.visible) }
         gameState.table.pyramid[3][1]?.let { assertTrue(it.visible) }
@@ -180,7 +185,7 @@ class ActionRemovePairTest {
         gameState.table.pyramid[1][0]?.let { assertFalse(it.visible) }
         gameState.table.pyramid[1][1]?.let { assertFalse(it.visible) }
         gameState.table.pyramid[6][0]?.let { assertFalse(it.visible) }
-        gameState.table.pyramid[6][5]?.let { assertFalse(it.visible) }
+        gameState.table.pyramid[6][5]?.let { assertTrue(it.visible) }
     }
 
     /**

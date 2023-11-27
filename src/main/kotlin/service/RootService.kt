@@ -89,16 +89,6 @@ class RootService: AbstractRefreshingService()  {
         }
     }
 
-    /**
-     * Entry point for starting the game with player names.
-     * Invokes the startGame method and checks if the game is finished after setup.
-     * @param player1Name The name of the first player.
-     * @param player2Name The name of the second player.
-     */
-    fun rootService(player1Name: String, player2Name: String) {
-        startGame(player1Name, player2Name)
-    }
-
      /**
      * Checks if the game has finished, either by players passing consecutively or the pyramid being empty.
      * @return Boolean indicating if the game has finished.

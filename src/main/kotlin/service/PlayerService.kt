@@ -212,7 +212,8 @@ class PlayerService(val rootService: RootService): AbstractRefreshingService() {
         if(!rootService.gameFinished()) {
             gameState.switchCurrentPlayer()
             gameState.sitOutCount++
-            if(rootService.gameFinished()) onAllRefreshables { onGameFinished(gameState.playerA.score, gameState.playerB.score) }
+            if(rootService.gameFinished()) onAllRefreshables {
+                onGameFinished(gameState.playerA.score, gameState.playerB.score) }
             onAllRefreshables { onActionSitOut(gameState.currentPlayer) }
         }
     }
